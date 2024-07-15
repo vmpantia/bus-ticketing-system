@@ -38,11 +38,13 @@ namespace BTS.Infrastructure.Databases.Contexts
                 r.HasOne(r => r.OriginTerminal)
                  .WithMany(t => t.OriginRoutes)
                  .HasForeignKey(r => r.OriginTerminalId)
+                 .OnDelete(DeleteBehavior.NoAction)
                  .IsRequired();
 
                 r.HasOne(r => r.DestinationTerminal)
                  .WithMany(t => t.DestinationRoutes)
                  .HasForeignKey(r => r.DestinationTerminalId)
+                 .OnDelete(DeleteBehavior.NoAction)
                  .IsRequired();
             });
 
@@ -51,11 +53,13 @@ namespace BTS.Infrastructure.Databases.Contexts
                 t.HasMany(t => t.OriginRoutes)
                  .WithOne(r => r.OriginTerminal)
                  .HasForeignKey(r => r.OriginTerminalId)
+                 .OnDelete(DeleteBehavior.NoAction)
                  .IsRequired();
 
                 t.HasMany(t => t.DestinationRoutes)
                  .WithOne(r => r.DestinationTerminal)
                  .HasForeignKey(r => r.DestinationTerminalId)
+                 .OnDelete(DeleteBehavior.NoAction)
                  .IsRequired();
             });
         }
