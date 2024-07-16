@@ -1,4 +1,5 @@
 ﻿using BTS.Domain.Models.Entities;
+using BTS.Domain.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace BTS.Infrastructure.Databases.Contexts
@@ -16,6 +17,8 @@ namespace BTS.Infrastructure.Databases.Contexts
         {
             modelBuilder.Entity<Bus>(b =>
             {
+                b.HasQueryFilter(data => data.Status != CommonStatus.Deleted);
+
                 b.HasOne(b => b.Driver)
                  .WithOne(d => d.Bus)
                  .IsRequired();
@@ -23,6 +26,8 @@ namespace BTS.Infrastructure.Databases.Contexts
 
             modelBuilder.Entity<Driver>(d =>
             {
+                d.HasQueryFilter(data => data.Status != CommonStatus.Deleted);
+
                 d.HasOne(d => d.Bus)
                  .WithOne(b => b.Driver)
                  .IsRequired();
@@ -30,6 +35,8 @@ namespace BTS.Infrastructure.Databases.Contexts
 
             modelBuilder.Entity<Route>(r =>
             {
+                r.HasQueryFilter(data => data.Status != CommonStatus.Deleted);
+
                 r.HasOne(r => r.Bus)
                  .WithMany(b => b.Routes)
                  .HasForeignKey(r => r.BusId)
@@ -50,6 +57,8 @@ namespace BTS.Infrastructure.Databases.Contexts
 
             modelBuilder.Entity<Terminal>(t =>
             {
+                t.HasQueryFilter(data => data.Status != CommonStatus.Deleted);
+
                 t.HasMany(t => t.OriginRoutes)
                  .WithOne(r => r.OriginTerminal)
                  .HasForeignKey(r => r.OriginTerminalId)
