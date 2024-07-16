@@ -1,0 +1,21 @@
+version: '3.4'
+
+services:
+  bts.api:
+    image: ${DOCKER_REGISTRY-}btsapi
+    container_name: bts.api
+    build:
+      context: .
+      dockerfile: BTS.Api/Dockerfile
+    ports:
+      - 5000:5000
+      - 5001:5001
+
+  bts.database:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: bts.database
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=P@ssw0rd
+    ports:
+      - 1443:1443

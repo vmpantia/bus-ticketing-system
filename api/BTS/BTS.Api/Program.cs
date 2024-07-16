@@ -1,3 +1,4 @@
+using BTS.Api.Extensions;
 using BTS.Core.Extensions;
 using BTS.Infrastructure.Extensions;
 
@@ -32,6 +33,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigrations();
 }
 
 // Setup Cors

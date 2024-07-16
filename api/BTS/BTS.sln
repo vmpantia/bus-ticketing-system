@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTS.Infrastructure", "BTS.I
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTS.Domain", "BTS.Domain\BTS.Domain.csproj", "{ADD19D72-984A-4C99-8105-F2A6D8ECF355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTS.Core", "BTS.Core\BTS.Core.csproj", "{7FEDF478-3B1C-4024-B7B8-25A2A0DB86F9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTS.Core", "BTS.Core\BTS.Core.csproj", "{7FEDF478-3B1C-4024-B7B8-25A2A0DB86F9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BTS.Api", "BTS.Api\BTS.Api.csproj", "{334275E6-5C29-4046-8323-6A9FAC80AAE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BTS.Api", "BTS.Api\BTS.Api.csproj", "{334275E6-5C29-4046-8323-6A9FAC80AAE8}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{F866A146-8CC9-4720-A283-0CA6D78086B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{334275E6-5C29-4046-8323-6A9FAC80AAE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{334275E6-5C29-4046-8323-6A9FAC80AAE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{334275E6-5C29-4046-8323-6A9FAC80AAE8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F866A146-8CC9-4720-A283-0CA6D78086B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F866A146-8CC9-4720-A283-0CA6D78086B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F866A146-8CC9-4720-A283-0CA6D78086B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F866A146-8CC9-4720-A283-0CA6D78086B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
