@@ -3,5 +3,5 @@ using MediatR;
 
 namespace BTS.Core.Queries.Models.Driver
 {
-    public record GetDriversQuery : IRequest<Result> { }
+    public record GetDriverByIdQuery(Guid Id) : IRequest<Result> { }
 }

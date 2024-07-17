@@ -12,22 +12,19 @@ namespace BTS.Api.Controllers
         public BaseController(IMediator mediator) =>
             _mediator = mediator;
 
-        protected async Task<IActionResult> HandleRequestAsync<TRequest, TResult>(TRequest request)
+        protected async Task<IActionResult> HandleRequestAsync<TRequest>(TRequest request)
             where TRequest : class
-            where TResult : class
         {
             try
             {
                 // Check if the request is NULL
-                if (request is null)
-                    throw new ArgumentNullException(nameof(request));
+                if (request is null) throw new ArgumentNullException(nameof(request));
 
                 // Process the request using mediator
                 var response = await _mediator.Send(request);
 
-                // Check if the response is valid type of Result<TResult>
-                if (!(response is ApiResponse<TResult> result))
-                    throw new Exception("Invalid api response for a certain request.");
+                // Check if the response is a Result
+                if (!(response is Result result))  throw new Exception("Invalid result for a certain request.");
 
                 return result switch
                 {
@@ -38,7 +35,7 @@ namespace BTS.Api.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ApiResponse<TResult>.Failure(CommonError.Unexpected(ex)));
+                return BadRequest(Result.Failure(CommonError.Unexpected(ex)));
             }
         }
     }

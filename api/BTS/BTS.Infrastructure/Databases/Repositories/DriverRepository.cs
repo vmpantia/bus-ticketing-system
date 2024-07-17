@@ -2,6 +2,7 @@
 using BTS.Domain.Models.Entities;
 using BTS.Infrastructure.Databases.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace BTS.Infrastructure.Databases.Repositories
 {
@@ -15,6 +16,16 @@ namespace BTS.Infrastructure.Databases.Repositories
             var entities = await GetAllAsync(token);
             var result = await entities.Include(tbl => tbl.Bus)
                                        .ToListAsync(token);
+
+            return result;
+        }
+
+        public async Task<Driver> GetDriverFullInfoAsync(Expression<Func<Driver, bool>> expression, CancellationToken token)
+        {
+            // Get driver stored in the database
+            var entities = await GetByExpressionAsync(expression, token);
+            var result = await entities.Include(tbl => tbl.Bus)
+                                       .FirstAsync(token);
 
             return result;
         }

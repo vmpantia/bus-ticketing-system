@@ -13,6 +13,10 @@ namespace BTS.Api.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetDrivers() =>
-            await HandleRequestAsync<GetDriversQuery, IEnumerable<DriverDto>>(new GetDriversQuery());
+            await HandleRequestAsync(new GetDriversQuery());
+
+        [HttpGet("{driverId}")]
+        public async Task<IActionResult> GetDriver(Guid driverId) =>
+            await HandleRequestAsync(new GetDriverByIdQuery(driverId));
     }
 }
