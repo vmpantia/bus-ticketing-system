@@ -48,5 +48,7 @@ namespace BTS.Infrastructure.Databases.Repositories
 
         public async Task DeleteAsync(TEntity entity, CancellationToken token) =>
             await Task.Run(() => _table.Remove(entity), token);
+
+        public async Task SaveAsync(CancellationToken token) => await _context.SaveChangesAsync(token);
     }
 }

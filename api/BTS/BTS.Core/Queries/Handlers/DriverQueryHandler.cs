@@ -10,14 +10,13 @@ using System.Linq.Expressions;
 
 namespace BTS.Core.Queries.Handlers
 {
-    public class DriverHandler : 
+    public class DriverQueryHandler : 
         IRequestHandler<GetDriversQuery, Result>,
         IRequestHandler<GetDriverByIdQuery, Result>
     {
         private readonly IDriverRepository _repository;
         private readonly IMapper _mapper;
-
-        public DriverHandler(IDriverRepository repository, IMapper mapper) 
+        public DriverQueryHandler(IDriverRepository repository, IMapper mapper) 
         {
             _repository = repository;
             _mapper = mapper;

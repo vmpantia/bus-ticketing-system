@@ -8,7 +8,11 @@ namespace BTS.Core.Mappings
     {
         public DriverProfile()
         {
-            CreateMap<Driver, DriverDto>();
+            CreateMap<Driver, DriverDto>()
+                .ForMember(dst => dst.LastUpdateAt, opt => opt.MapFrom(src => src.UpdatedAt ?? src.CreatedAt))
+                .ForMember(dst => dst.LastUpdateBy, opt => opt.MapFrom(src => src.UpdatedBy ?? src.CreatedBy));
+            CreateMap<CreateDriverDto, Driver>()
+                .ForMember(dst => dst.Birthdate, opt => opt.MapFrom(src => src.Birthdate.Date));
         }
     }
 }

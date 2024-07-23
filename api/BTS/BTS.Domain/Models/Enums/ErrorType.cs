@@ -5,6 +5,7 @@
         Unexpected,
         Mapping,
         NULL,
-        NotFound
+        NotFound,
+        Duplicate,
     }
 }
