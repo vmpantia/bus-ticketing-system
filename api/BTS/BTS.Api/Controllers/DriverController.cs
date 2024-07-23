@@ -1,5 +1,4 @@
 using BTS.Core.Queries.Models.Driver;
-using BTS.Domain.Models.Dtos.Driver;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

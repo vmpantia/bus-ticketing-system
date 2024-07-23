@@ -1,4 +1,6 @@
-﻿namespace BTS.Domain.Models.Dtos.Driver
+﻿using BTS.Domain.Models.Lites;
+
+namespace BTS.Domain.Models.Dtos.Driver
 {
     public class DriverDto
     {
@@ -11,12 +13,10 @@
         public required string ContactNo { get; set; }
         public required DateTime Birthdate { get; set; }
 
-        // Bus Information
-        public required int BusId { get; set; }
-        public required string BusNo { get; set; }
-        public required string BusPlateNo { get; set; }
+        // Related Data
+        public required BusLite Bus { get; set; }
 
-        public required DateTime LastUpdateAt { get; set; }
+        public required DateTimeOffset LastUpdateAt { get; set; }
         public required string LastUpdateBy { get; set; }
     }
 }

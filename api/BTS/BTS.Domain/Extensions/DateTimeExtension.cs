@@ -2,6 +2,6 @@
 {
     public class DateTimeExtension
     {
-        public static DateTime GetCurrentDateByUtc() => DateTime.UtcNow;
+        public static DateTimeOffset GetCurrentDateTimeOffsetUtc() => DateTimeOffset.UtcNow;
     }
 }
