@@ -33,7 +33,7 @@ namespace BTS.Domain.Results
         public Error? Error { get; }
 
         public static Result Success() => new();
-        public static Result Success(object data) => new(data);
+        public static Result Success<TData>(TData data) => new(data!);
         public static Result Failure(Error error) => new(error);
     }
 

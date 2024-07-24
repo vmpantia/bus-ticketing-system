@@ -24,7 +24,7 @@ namespace BTS.Api.Controllers
                 var response = await _mediator.Send(request);
 
                 // Check if the response is a Result
-                if (!(response is Result result))  throw new Exception("Invalid result for a certain request.");
+                if (!(response is Result result)) throw new Exception("Invalid result for a certain request.");
 
                 return result switch
                 {

@@ -21,18 +21,18 @@ namespace BTS.Core.Commands.Handlers
             _mapper = mapper;
         }
 
-        public async Task<Result> Handle(CreateDriverCommand command, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CreateDriverCommand request, CancellationToken cancellationToken)
         {
             // Check if the license no already exist or duplicate
-            if (await _repository.IsExistAsync(data => data.LicenseNo.Equals(command.Request.LicenseNo), cancellationToken))
+            if (await _repository.IsExistAsync(data => data.LicenseNo.Equals(request.LicenseNo), cancellationToken))
                 return Result.Failure(DriverError.DuplicateDriversLicenseNo);
 
             // Convert dto to entity (prepare new driver info)
-            var newDriver = _mapper.Map<Driver>(command.Request);
+            var newDriver = _mapper.Map<Driver>(request);
             newDriver.Id = Guid.NewGuid();
             newDriver.Status = CommonStatus.Active;
             newDriver.CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
-            newDriver.CreatedBy = command.Requestor;
+            newDriver.CreatedBy = request.Requestor;
 
             // Save new driver in the database
             await _repository.CreateAsync(newDriver, cancellationToken);
