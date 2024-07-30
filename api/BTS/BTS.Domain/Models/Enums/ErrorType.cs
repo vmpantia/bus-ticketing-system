@@ -6,6 +6,6 @@
         Mapping,
         NULL,
         NotFound,
-        Duplicate,
+        ValidationFailure,
     }
 }

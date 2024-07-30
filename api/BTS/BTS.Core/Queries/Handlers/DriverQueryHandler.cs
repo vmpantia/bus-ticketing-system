@@ -1,10 +1,10 @@
 ﻿using AutoMapper;
 using BTS.Core.Queries.Models.Driver;
+using BTS.Core.Results;
+using BTS.Core.Results.Errors;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Models.Dtos.Driver;
 using BTS.Domain.Models.Entities;
-using BTS.Domain.Results;
-using BTS.Domain.Results.Errors;
 using MediatR;
 using System.Linq.Expressions;
 

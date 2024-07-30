@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using BTS.Core.Commands.Models;
+using BTS.Core.Results;
+using BTS.Core.Results.Errors;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Extensions;
 using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
-using BTS.Domain.Results;
-using BTS.Domain.Results.Errors;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
@@ -27,10 +27,10 @@ namespace BTS.Core.Commands.Handlers
 
         public async Task<Result> Handle(CreateDriverCommand request, CancellationToken cancellationToken)
         {
+            // Validate request
             ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
-
-            if (!validationResult.IsValid)
-                return Result.Failure(DriverError.DuplicateDriversLicenseNo);
+            if (!validationResult.IsValid) 
+                return Result.Failure(CommonError.ValidationFailure<CreateDriverCommand>(validationResult.Errors));
 
             // Convert dto to entity (prepare new driver info)
             var newDriver = _mapper.Map<Driver>(request);

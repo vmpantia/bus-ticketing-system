@@ -1,6 +1,6 @@
-﻿using BTS.Domain.Models.Enums;
-using BTS.Domain.Results;
-using BTS.Domain.Results.Errors;
+﻿using BTS.Core.Results;
+using BTS.Core.Results.Errors;
+using BTS.Domain.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

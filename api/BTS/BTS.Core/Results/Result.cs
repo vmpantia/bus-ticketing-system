@@ -1,6 +1,6 @@
 ﻿using BTS.Domain.Models.Enums;
 
-namespace BTS.Domain.Results
+namespace BTS.Core.Results
 {
     public class Result
     {
@@ -33,9 +33,9 @@ namespace BTS.Domain.Results
         public Error? Error { get; }
 
         public static Result Success() => new();
-        public static Result Success<TData>(TData data) => new(data!);
+        public static Result Success<TData>(TData data) where TData : notnull => new(data);
         public static Result Failure(Error error) => new(error);
     }
 
-    public sealed record Error(ErrorType Type, string Object, string Message) { }
+    public sealed record Error(ErrorType Type, string Object, object Value) { }
 }

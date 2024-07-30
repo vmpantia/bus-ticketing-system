@@ -1,4 +1,4 @@
-﻿using BTS.Domain.Results;
+﻿using BTS.Core.Results;
 using MediatR;
 
 namespace BTS.Core.Queries.Models.Driver

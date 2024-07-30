@@ -1,5 +1,5 @@
-﻿using BTS.Domain.Models.Dtos.Driver;
-using BTS.Domain.Results;
+﻿using BTS.Core.Results;
+using BTS.Domain.Models.Dtos.Driver;
 using MediatR;
 
 namespace BTS.Core.Commands.Models
