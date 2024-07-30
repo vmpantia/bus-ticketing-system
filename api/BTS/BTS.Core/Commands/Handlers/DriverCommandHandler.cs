@@ -6,6 +6,8 @@ using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
 using BTS.Domain.Results;
 using BTS.Domain.Results.Errors;
+using FluentValidation;
+using FluentValidation.Results;
 using MediatR;
 
 namespace BTS.Core.Commands.Handlers
@@ -14,17 +16,20 @@ namespace BTS.Core.Commands.Handlers
         IRequestHandler<CreateDriverCommand, Result>
     {
         private readonly IDriverRepository _repository;
+        private readonly IValidator<CreateDriverCommand> _validator;
         private readonly IMapper _mapper;
-        public DriverCommandHandler(IDriverRepository repository, IMapper mapper)
+        public DriverCommandHandler(IDriverRepository repository, IValidator<CreateDriverCommand> validator, IMapper mapper)
         {
             _repository = repository;
+            _validator = validator;
             _mapper = mapper;
         }
 
         public async Task<Result> Handle(CreateDriverCommand request, CancellationToken cancellationToken)
         {
-            // Check if the license no already exist or duplicate
-            if (await _repository.IsExistAsync(data => data.LicenseNo.Equals(request.LicenseNo), cancellationToken))
+            ValidationResult validationResult = await _validator.ValidateAsync(request, cancellationToken);
+
+            if (!validationResult.IsValid)
                 return Result.Failure(DriverError.DuplicateDriversLicenseNo);
 
             // Convert dto to entity (prepare new driver info)

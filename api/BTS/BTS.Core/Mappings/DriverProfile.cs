@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BTS.Core.Commands.Models;
 using BTS.Domain.Models.Dtos.Driver;
 using BTS.Domain.Models.Entities;
 
@@ -11,7 +12,7 @@ namespace BTS.Core.Mappings
             CreateMap<Driver, DriverDto>()
                 .ForMember(dst => dst.LastUpdateAt, opt => opt.MapFrom(src => src.UpdatedAt ?? src.CreatedAt))
                 .ForMember(dst => dst.LastUpdateBy, opt => opt.MapFrom(src => src.UpdatedBy ?? src.CreatedBy));
-            CreateMap<CreateDriverDto, Driver>()
+            CreateMap<CreateDriverCommand, Driver>()
                 .ForMember(dst => dst.Birthdate, opt => opt.MapFrom(src => src.Birthdate.Date));
         }
     }
