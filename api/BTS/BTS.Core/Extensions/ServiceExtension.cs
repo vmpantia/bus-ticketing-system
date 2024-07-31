@@ -1,5 +1,6 @@
 ﻿using BTS.Core.Behaviors;
 using BTS.Core.Commands.Models;
+using BTS.Core.Results;
 using BTS.Core.Validators;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,6 +25,7 @@ namespace BTS.Core.Extensions
             services.AddMediatR(config =>
             {
                 config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                config.AddOpenBehavior(typeof(ValidatorBehavior<,>));
                 config.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
             });
 

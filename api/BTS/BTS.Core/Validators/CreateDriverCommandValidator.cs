@@ -24,7 +24,8 @@ namespace BTS.Core.Validators
                     {
                         bool isExists = await _repository.IsExistAsync(data => data.LicenseNo == license, cancellation);
                         return !isExists;
-                    }).WithMessage(string.Format(ErrorMessage.ERROR_UNIQUE_VALUE_FORMAT, "License number"));
+                    })
+                    .WithMessage(string.Format(ErrorMessage.ERROR_UNIQUE_VALUE_FORMAT, "License number"));
 
             RuleFor(property => property.FirstName)
                 .NotNull()
@@ -63,7 +64,7 @@ namespace BTS.Core.Validators
                     .WithMessage(string.Format(ErrorMessage.ERROR_NULL_VALUE_FORMAT, "Birthdate"))
                 .NotEmpty()
                     .WithMessage(string.Format(ErrorMessage.ERROR_EMPTY_VALUE_FORMAT, "Birthdate"))
-                .Must(birthDate => !DateTimeExtension.IsFutureDate(birthDate))
+                .Must(birthDate => DateTimeExtension.IsFutureDate(birthDate))
                     .WithMessage("Birthdate must not be a future date.");
         }
     }

@@ -1,4 +1,6 @@
-﻿using BTS.Domain.Contractors.Repositories.Common;
+﻿using BTS.Core.Results;
+using BTS.Domain.Contractors.Repositories.Common;
+using BTS.Domain.Extensions;
 using MediatR;
 using System.Transactions;
 
@@ -6,6 +8,7 @@ namespace BTS.Core.Behaviors
 {
     public class UnitOfWorkBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
         where TRequest : notnull
+        where TResponse : Result
     {
         private readonly IUnitOfWork _unitOfWork;
         public UnitOfWorkBehavior(IUnitOfWork unitOfWork) => _unitOfWork = unitOfWork; 
@@ -13,7 +16,7 @@ namespace BTS.Core.Behaviors
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
             // Skip pipeline once the request name is not ends with Command
-            if (IsNotCommand()) return await next();
+            if (CommandExtension.IsNotCommand<TRequest>()) return await next();
 
             using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
@@ -29,7 +32,5 @@ namespace BTS.Core.Behaviors
                 return response;
             }
         }
-
-        private static bool IsNotCommand() => !typeof(TRequest).Name.EndsWith("Command");
     }
 }
