@@ -1,7 +1,4 @@
 ﻿using BTS.Core.Behaviors;
-using BTS.Core.Commands.Models;
-using BTS.Core.Results;
-using BTS.Core.Validators;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -12,21 +9,21 @@ namespace BTS.Core.Extensions
     {
         public static void AddCore(this IServiceCollection services) =>
             services.AddAutoMapper()
-                    .AddMediatR()
-                    .AddValidators();
+                    .AddValidators()
+                    .AddMediatR();
 
         private static IServiceCollection AddAutoMapper(this IServiceCollection services) =>
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
         private static IServiceCollection AddValidators(this IServiceCollection services) =>
-            services.AddScoped<IValidator<CreateDriverCommand>, CreateDriverCommandValidator>();
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 
         private static IServiceCollection AddMediatR(this IServiceCollection services) =>
             services.AddMediatR(config =>
             {
                 config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-                config.AddOpenBehavior(typeof(ValidatorBehavior<,>));
-                config.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+                config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
+                config.AddOpenBehavior(typeof(UnitOfWorkPipelineBehavior<,>));
             });
 
     }

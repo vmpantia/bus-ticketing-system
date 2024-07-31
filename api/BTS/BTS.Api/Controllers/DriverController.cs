@@ -23,5 +23,9 @@ namespace BTS.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> PostCreateDriver([FromBody] CreateDriverDto dto) =>
             await HandleRequestAsync(new CreateDriverCommand(dto));
+
+        [HttpPut("{driverId}")]
+        public async Task<IActionResult> PutUpdateDriver(Guid driverId, [FromBody] UpdateDriverDto dto) =>
+            await HandleRequestAsync(new UpdateDriverCommand(driverId, dto));
     }
 }

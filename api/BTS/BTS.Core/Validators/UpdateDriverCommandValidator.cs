@@ -6,10 +6,10 @@ using FluentValidation;
 
 namespace BTS.Core.Validators
 {
-    public class UpdateDriverCommandValidator : AbstractValidator<UpdateDriverCommand>
+    public class CreateDriverCommandValidator : AbstractValidator<CreateDriverCommand>
     {
         private readonly IDriverRepository _repository;
-        public UpdateDriverCommandValidator(IDriverRepository repository)
+        public CreateDriverCommandValidator(IDriverRepository repository)
         {
             // Repository
             _repository = repository;

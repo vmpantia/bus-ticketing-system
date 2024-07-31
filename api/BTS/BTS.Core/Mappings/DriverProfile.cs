@@ -14,6 +14,8 @@ namespace BTS.Core.Mappings
                 .ForMember(dst => dst.LastUpdateBy, opt => opt.MapFrom(src => src.UpdatedBy ?? src.CreatedBy));
             CreateMap<CreateDriverCommand, Driver>()
                 .ForMember(dst => dst.Birthdate, opt => opt.MapFrom(src => src.Birthdate.Date));
+            CreateMap<UpdateDriverCommand, Driver>()
+                .ForMember(dst => dst.Birthdate, opt => opt.MapFrom(src => src.Birthdate.Date));
         }
     }
 }

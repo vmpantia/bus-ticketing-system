@@ -4,6 +4,7 @@ namespace BTS.Domain.Models.Dtos.Driver
 {
     public class DriverDto
     {
+        public required Guid Id { get; set; }
         public required string LicenseNo { get; set; }
         public required string FirstName { get; set; }
         public string? MiddleName { get; set; }
