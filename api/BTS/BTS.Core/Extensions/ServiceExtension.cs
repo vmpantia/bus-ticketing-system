@@ -1,4 +1,5 @@
-﻿using BTS.Core.Commands.Models;
+﻿using BTS.Core.Behaviors;
+using BTS.Core.Commands.Models;
 using BTS.Core.Validators;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -20,7 +21,11 @@ namespace BTS.Core.Extensions
             services.AddScoped<IValidator<CreateDriverCommand>, CreateDriverCommandValidator>();
 
         private static IServiceCollection AddMediatR(this IServiceCollection services) =>
-            services.AddMediatR(config => config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+            services.AddMediatR(config =>
+            {
+                config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                config.AddOpenBehavior(typeof(UnitOfWorkBehavior<,>));
+            });
 
     }
 }

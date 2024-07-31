@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace BTS.Domain.Contractors.Repositories
+namespace BTS.Domain.Contractors.Repositories.Common
 {
     public interface IBaseRepository<TEntity> where TEntity : class
     {
@@ -12,6 +12,5 @@ namespace BTS.Domain.Contractors.Repositories
         Task<TEntity> CreateAsync(TEntity entity, CancellationToken token);
         Task<TEntity> UpdateAsync(TEntity entity, CancellationToken token);
         Task DeleteAsync(TEntity entity, CancellationToken token);
-        Task SaveAsync(CancellationToken token);
     }
 }

@@ -1,4 +1,5 @@
-﻿using BTS.Domain.Models.Entities;
+﻿using BTS.Domain.Contractors.Repositories.Common;
+using BTS.Domain.Models.Entities;
 using System.Linq.Expressions;
 
 namespace BTS.Domain.Contractors.Repositories

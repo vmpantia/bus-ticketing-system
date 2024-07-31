@@ -1,9 +1,9 @@
-﻿using BTS.Domain.Contractors.Repositories;
+﻿using BTS.Domain.Contractors.Repositories.Common;
 using BTS.Infrastructure.Databases.Contexts;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
-namespace BTS.Infrastructure.Databases.Repositories
+namespace BTS.Infrastructure.Databases.Repositories.Common
 {
     public class BaseRepository<TEntity> : IBaseRepository<TEntity>
         where TEntity : class
@@ -16,13 +16,13 @@ namespace BTS.Infrastructure.Databases.Repositories
             _table = context.Set<TEntity>();
         }
 
-        public async Task<IQueryable<TEntity>> GetAllAsync(CancellationToken token) => 
+        public async Task<IQueryable<TEntity>> GetAllAsync(CancellationToken token) =>
             await Task.Run(() => _table, token);
 
-        public async Task<IQueryable<TEntity>> GetByExpressionAsync(Expression<Func<TEntity, bool>> expression, CancellationToken token) => 
+        public async Task<IQueryable<TEntity>> GetByExpressionAsync(Expression<Func<TEntity, bool>> expression, CancellationToken token) =>
             await Task.Run(() => _table.Where(expression), token);
 
-        public async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>> expression, CancellationToken token) => 
+        public async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>> expression, CancellationToken token) =>
             await _table.Where(expression).FirstAsync(token);
 
         public bool IsExist(Expression<Func<TEntity, bool>> expression, out TEntity entity)
@@ -31,7 +31,7 @@ namespace BTS.Infrastructure.Databases.Repositories
             return entity is not null;
         }
 
-        public async Task<bool> IsExistAsync(Expression<Func<TEntity, bool>> expression, CancellationToken token) => 
+        public async Task<bool> IsExistAsync(Expression<Func<TEntity, bool>> expression, CancellationToken token) =>
             await _table.AnyAsync(expression, token);
 
         public async Task<TEntity> CreateAsync(TEntity entity, CancellationToken token)
@@ -48,7 +48,5 @@ namespace BTS.Infrastructure.Databases.Repositories
 
         public async Task DeleteAsync(TEntity entity, CancellationToken token) =>
             await Task.Run(() => _table.Remove(entity), token);
-
-        public async Task SaveAsync(CancellationToken token) => await _context.SaveChangesAsync(token);
     }
 }

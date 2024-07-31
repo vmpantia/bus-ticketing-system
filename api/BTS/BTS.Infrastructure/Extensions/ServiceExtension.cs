@@ -1,6 +1,8 @@
 ﻿using BTS.Domain.Contractors.Repositories;
+using BTS.Domain.Contractors.Repositories.Common;
 using BTS.Infrastructure.Databases.Contexts;
 using BTS.Infrastructure.Databases.Repositories;
+using BTS.Infrastructure.Databases.Repositories.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,7 @@ namespace BTS.Infrastructure.Extensions
             services.AddDbContext<BTSDbContext>(context => context.UseSqlServer(configuration.GetConnectionString("MigrationDb")));
 
         private static IServiceCollection AddRepositories(this IServiceCollection services) =>
-            services.AddScoped<IDriverRepository, DriverRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>()
+                    .AddScoped<IDriverRepository, DriverRepository>();
     }
 }

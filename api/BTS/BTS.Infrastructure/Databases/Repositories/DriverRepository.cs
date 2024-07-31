@@ -1,6 +1,7 @@
 ﻿using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Models.Entities;
 using BTS.Infrastructure.Databases.Contexts;
+using BTS.Infrastructure.Databases.Repositories.Common;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

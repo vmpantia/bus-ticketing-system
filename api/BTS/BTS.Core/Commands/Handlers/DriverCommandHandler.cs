@@ -39,9 +39,8 @@ namespace BTS.Core.Commands.Handlers
             newDriver.CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
             newDriver.CreatedBy = request.Requestor;
 
-            // Save new driver in the database
+            // Create new driver in the database
             await _repository.CreateAsync(newDriver, cancellationToken);
-            await _repository.SaveAsync(cancellationToken);
 
             return Result.Success($"Driver created successfully. (Id: ${newDriver.Id}");
         }
