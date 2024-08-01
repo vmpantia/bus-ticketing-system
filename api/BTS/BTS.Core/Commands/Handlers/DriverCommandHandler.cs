@@ -12,7 +12,8 @@ namespace BTS.Core.Commands.Handlers
 {
     public class DriverCommandHandler :
         IRequestHandler<CreateDriverCommand, Result>,
-        IRequestHandler<UpdateDriverCommand, Result>
+        IRequestHandler<UpdateDriverCommand, Result>,
+        IRequestHandler<UpdateDriverStatusCommand, Result>
     {
         private readonly IDriverRepository _repository;
         private readonly IMapper _mapper;
@@ -34,7 +35,7 @@ namespace BTS.Core.Commands.Handlers
             // Create new driver in the database
             await _repository.CreateAsync(newDriver, cancellationToken);
 
-            return Result.Success($"Driver created successfully. (Id: ${newDriver.Id}");
+            return Result.Success("Driver created successfully.");
         }
 
         public async Task<Result> Handle(UpdateDriverCommand request, CancellationToken cancellationToken)
@@ -48,10 +49,27 @@ namespace BTS.Core.Commands.Handlers
             updatedDriver.UpdatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
             updatedDriver.UpdatedBy = request.Requestor;
 
-            // Create new driver in the database
+            // Update driver in the database
             await _repository.UpdateAsync(updatedDriver, cancellationToken);
 
-            return Result.Success($"Driver updated successfully. (Id: ${updatedDriver.Id}");
+            return Result.Success("Driver updated successfully.");
+        }
+
+        public async Task<Result> Handle(UpdateDriverStatusCommand request, CancellationToken cancellationToken)
+        {
+            // Check if the driver to update is exist in the database
+            if (!_repository.IsExist(data => data.Id == request.DriverId, out Driver driver))
+                return Result.Failure(DriverError.NotFound);
+
+            // Update driver status
+            driver.Status = request.NewStatus;
+            driver.UpdatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
+            driver.UpdatedBy = request.Requestor;
+
+            // Update driver in the database
+            await _repository.UpdateAsync(driver, cancellationToken);
+
+            return Result.Success("Driver status updated successfully.");
         }
     }
 }

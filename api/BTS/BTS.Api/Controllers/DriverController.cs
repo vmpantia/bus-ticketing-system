@@ -1,6 +1,7 @@
 using BTS.Core.Commands.Models;
 using BTS.Core.Queries.Models.Driver;
 using BTS.Domain.Models.Dtos.Driver;
+using BTS.Domain.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,5 +28,9 @@ namespace BTS.Api.Controllers
         [HttpPut("{driverId}")]
         public async Task<IActionResult> PutUpdateDriver(Guid driverId, [FromBody] UpdateDriverDto dto) =>
             await HandleRequestAsync(new UpdateDriverCommand(driverId, dto));
+
+        [HttpPatch("{driverId}")]
+        public async Task<IActionResult> PatchUpdateDriverStatus(Guid driverId, [FromQuery] CommonStatus newStatus) =>
+            await HandleRequestAsync(new UpdateDriverStatusCommand(driverId, newStatus));
     }
 }
