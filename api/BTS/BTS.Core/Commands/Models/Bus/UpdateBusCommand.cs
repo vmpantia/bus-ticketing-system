@@ -3,10 +3,11 @@ using BTS.Domain.Models.Dtos.Bus;
 
 namespace BTS.Core.Commands.Models.Bus
 {
-    public class CreateBusCommand : ICreateUpdateBusCommand
+    public class UpdateBusCommand : ICreateUpdateBusCommand
     {
-        public CreateBusCommand(CreateBusDto dto, string requestor = "System")
+        public UpdateBusCommand(Guid busId, UpdateBusDto dto, string requestor = "System")
         {
+            BusIdToUpdate = busId;
             DriverId = dto.DriverId;
             BusNo = dto.BusNo;
             PlateNo = dto.PlateNo;
@@ -16,6 +17,7 @@ namespace BTS.Core.Commands.Models.Bus
             Requestor = requestor;
         }
 
+        public Guid BusIdToUpdate { get; init; }
         public Guid? DriverId { get; init; }
         public string BusNo { get; init; }
         public string PlateNo { get; init; }
