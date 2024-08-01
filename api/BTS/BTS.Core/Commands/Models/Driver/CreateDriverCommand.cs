@@ -2,7 +2,7 @@
 using BTS.Domain.Models.Dtos.Driver;
 using MediatR;
 
-namespace BTS.Core.Commands.Models
+namespace BTS.Core.Commands.Models.Driver
 {
     public sealed class CreateDriverCommand : IRequest<Result>
     {

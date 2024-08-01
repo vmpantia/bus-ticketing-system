@@ -15,8 +15,4 @@
     <ProjectReference Include="..\BTS.Domain\BTS.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Migrations\" />
-  </ItemGroup>
-
 </Project>

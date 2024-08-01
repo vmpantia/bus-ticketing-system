@@ -66,7 +66,7 @@ namespace BTS.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DriverId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DriverId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     BusNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PlateNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Make = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -87,8 +87,7 @@ namespace BTS.Infrastructure.Migrations
                         name: "FK_Buses_Drivers_DriverId",
                         column: x => x.DriverId,
                         principalTable: "Drivers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -132,7 +131,8 @@ namespace BTS.Infrastructure.Migrations
                 name: "IX_Buses_DriverId",
                 table: "Buses",
                 column: "DriverId",
-                unique: true);
+                unique: true,
+                filter: "[DriverId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Routes_BusId",

@@ -21,7 +21,7 @@ namespace BTS.Infrastructure.Databases.Contexts
 
                 b.HasOne(b => b.Driver)
                  .WithOne(d => d.Bus)
-                 .IsRequired();
+                 .IsRequired(false);
             });
 
             modelBuilder.Entity<Driver>(d =>
@@ -30,7 +30,7 @@ namespace BTS.Infrastructure.Databases.Contexts
 
                 d.HasOne(d => d.Bus)
                  .WithOne(b => b.Driver)
-                 .IsRequired();
+                 .IsRequired(false);
             });
 
             modelBuilder.Entity<Route>(r =>

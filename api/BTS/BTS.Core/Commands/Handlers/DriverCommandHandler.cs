@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using BTS.Core.Commands.Models;
+using BTS.Core.Commands.Models.Driver;
 using BTS.Core.Results;
 using BTS.Core.Results.Errors;
 using BTS.Domain.Contractors.Repositories;
@@ -10,7 +10,7 @@ using MediatR;
 
 namespace BTS.Core.Commands.Handlers
 {
-    public class DriverCommandHandler :
+    public sealed class DriverCommandHandler :
         IRequestHandler<CreateDriverCommand, Result>,
         IRequestHandler<UpdateDriverCommand, Result>,
         IRequestHandler<UpdateDriverStatusCommand, Result>
@@ -27,10 +27,6 @@ namespace BTS.Core.Commands.Handlers
         {
             // Convert dto to entity (prepare new driver info)
             var newDriver = _mapper.Map<Driver>(request);
-            newDriver.Id = Guid.NewGuid();
-            newDriver.Status = CommonStatus.Active;
-            newDriver.CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
-            newDriver.CreatedBy = request.Requestor;
 
             // Create new driver in the database
             await _repository.CreateAsync(newDriver, cancellationToken);
@@ -46,8 +42,6 @@ namespace BTS.Core.Commands.Handlers
 
             // Convert dto to entity (prepare updated driver info)
             var updatedDriver = _mapper.Map(request, driver);
-            updatedDriver.UpdatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
-            updatedDriver.UpdatedBy = request.Requestor;
 
             // Update driver in the database
             await _repository.UpdateAsync(updatedDriver, cancellationToken);
@@ -63,8 +57,16 @@ namespace BTS.Core.Commands.Handlers
 
             // Update driver status
             driver.Status = request.NewStatus;
-            driver.UpdatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
-            driver.UpdatedBy = request.Requestor;
+            if (request.NewStatus == CommonStatus.Deleted)
+            {
+                driver.DeletedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
+                driver.DeletedBy = request.Requestor;
+            }
+            else
+            {
+                driver.UpdatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
+                driver.UpdatedBy = request.Requestor;
+            }
 
             // Update driver in the database
             await _repository.UpdateAsync(driver, cancellationToken);

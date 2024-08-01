@@ -1,4 +1,4 @@
-﻿using BTS.Core.Commands.Models;
+﻿using BTS.Core.Commands.Models.Driver;
 using BTS.Domain.Constants;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Extensions;

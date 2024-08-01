@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace BTS.Core.Queries.Handlers
 {
-    public class DriverQueryHandler : 
+    public sealed class DriverQueryHandler : 
         IRequestHandler<GetDriversQuery, Result>,
         IRequestHandler<GetDriverByIdQuery, Result>
     {

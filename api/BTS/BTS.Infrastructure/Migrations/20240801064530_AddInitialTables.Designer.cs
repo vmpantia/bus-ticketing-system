@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BTS.Infrastructure.Migrations
 {
     [DbContext(typeof(BTSDbContext))]
-    [Migration("20240723132827_AddInitialTables")]
+    [Migration("20240801064530_AddInitialTables")]
     partial class AddInitialTables
     {
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace BTS.Infrastructure.Migrations
                     b.Property<string>("DeletedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("DriverId")
+                    b.Property<Guid?>("DriverId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Make")
@@ -79,7 +79,8 @@ namespace BTS.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DriverId")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[DriverId] IS NOT NULL");
 
                     b.ToTable("Buses");
                 });
@@ -255,9 +256,7 @@ namespace BTS.Infrastructure.Migrations
                 {
                     b.HasOne("BTS.Domain.Models.Entities.Driver", "Driver")
                         .WithOne("Bus")
-                        .HasForeignKey("BTS.Domain.Models.Entities.Bus", "DriverId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("BTS.Domain.Models.Entities.Bus", "DriverId");
 
                     b.Navigation("Driver");
                 });

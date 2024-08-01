@@ -1,9 +1,6 @@
-﻿using BTS.Domain.Contractors.Models;
-using BTS.Domain.Models.Enums;
-
-namespace BTS.Domain.Models.Entities
+﻿namespace BTS.Domain.Models.Dtos.Bus
 {
-    public class Bus : BaseEntity<Guid, CommonStatus>
+    public class CreateBusDto
     {
         public Guid? DriverId { get; set; }
         public required string BusNo { get; set; }
@@ -11,8 +8,5 @@ namespace BTS.Domain.Models.Entities
         public required string Make { get; set; }
         public required string Model { get; set; }
         public required string Year { get; set; }
-
-        public virtual Driver? Driver { get; set; }
-        public required virtual ICollection<Route> Routes { get; set; }
     }
 }

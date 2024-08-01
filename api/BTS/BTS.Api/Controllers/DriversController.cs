@@ -1,4 +1,4 @@
-using BTS.Core.Commands.Models;
+using BTS.Core.Commands.Models.Driver;
 using BTS.Core.Queries.Models.Driver;
 using BTS.Domain.Models.Dtos.Driver;
 using BTS.Domain.Models.Enums;
@@ -7,11 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BTS.Api.Controllers
 {
+    [Route("api/[controller]")]
     [ApiController]
-    [Route("drivers")]
-    public class DriverController : BaseController
+    public class DriversController : BaseController
     {
-        public DriverController(IMediator mediator) : base(mediator) { }
+        public DriversController(IMediator mediator) : base(mediator) { }
 
         [HttpGet]
         public async Task<IActionResult> GetDrivers() =>
@@ -26,7 +26,7 @@ namespace BTS.Api.Controllers
             await HandleRequestAsync(new CreateDriverCommand(dto));
 
         [HttpPut("{driverId}")]
-        public async Task<IActionResult> PutUpdateDriver(Guid driverId, [FromBody] UpdateDriverDto dto) =>
+        public async Task<IActionResult> PutUpdateDriver(Guid driverId, [FromBody] UpdateBusDto dto) =>
             await HandleRequestAsync(new UpdateDriverCommand(driverId, dto));
 
         [HttpPatch("{driverId}")]
