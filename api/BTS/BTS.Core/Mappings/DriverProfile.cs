@@ -13,6 +13,7 @@ namespace BTS.Core.Mappings
         public DriverProfile()
         {
             CreateMap<Driver, DriverDto>()
+                .ForMember(dst => dst.Status, opt => opt.MapFrom(src => src.Status.ToString()))
                 .ForMember(dst => dst.LastUpdateAt, opt => opt.MapFrom(src => src.UpdatedAt ?? src.CreatedAt))
                 .ForMember(dst => dst.LastUpdateBy, opt => opt.MapFrom(src => src.UpdatedBy ?? src.CreatedBy));
             CreateMap<Driver, DriverLite>()

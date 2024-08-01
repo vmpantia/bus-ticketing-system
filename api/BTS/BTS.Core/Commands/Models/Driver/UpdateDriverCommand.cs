@@ -1,10 +1,11 @@
-﻿using BTS.Core.Results;
+﻿using BTS.Core.Commands.Models.Driver.Common;
+using BTS.Core.Results;
 using BTS.Domain.Models.Dtos.Driver;
 using MediatR;
 
 namespace BTS.Core.Commands.Models.Driver
 {
-    public sealed class UpdateDriverCommand : IRequest<Result>
+    public class UpdateDriverCommand : ICreateUpdateDriverCommand
     {
         public UpdateDriverCommand(Guid driverId, UpdateBusDto dto, string requestor = "System")
         {

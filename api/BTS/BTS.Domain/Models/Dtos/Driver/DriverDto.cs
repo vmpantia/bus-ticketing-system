@@ -13,6 +13,7 @@ namespace BTS.Domain.Models.Dtos.Driver
         public required string Address { get; set; }
         public required string ContactNo { get; set; }
         public required DateTime Birthdate { get; set; }
+        public required string Status { get; set; }
 
         // Related Data
         public required BusLite Bus { get; set; }
