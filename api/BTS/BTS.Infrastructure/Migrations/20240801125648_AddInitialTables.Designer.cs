@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BTS.Infrastructure.Migrations
 {
     [DbContext(typeof(BTSDbContext))]
-    [Migration("20240801064530_AddInitialTables")]
+    [Migration("20240801125648_AddInitialTables")]
     partial class AddInitialTables
     {
         /// <inheritdoc />
@@ -63,6 +63,9 @@ namespace BTS.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<Guid?>("RouteId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -81,6 +84,10 @@ namespace BTS.Infrastructure.Migrations
                     b.HasIndex("DriverId")
                         .IsUnique()
                         .HasFilter("[DriverId] IS NOT NULL");
+
+                    b.HasIndex("RouteId")
+                        .IsUnique()
+                        .HasFilter("[RouteId] IS NOT NULL");
 
                     b.ToTable("Buses");
                 });
@@ -154,9 +161,6 @@ namespace BTS.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("BusId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
@@ -186,8 +190,6 @@ namespace BTS.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BusId");
 
                     b.HasIndex("DestinationTerminalId");
 
@@ -258,17 +260,17 @@ namespace BTS.Infrastructure.Migrations
                         .WithOne("Bus")
                         .HasForeignKey("BTS.Domain.Models.Entities.Bus", "DriverId");
 
+                    b.HasOne("BTS.Domain.Models.Entities.Route", "Route")
+                        .WithOne("Bus")
+                        .HasForeignKey("BTS.Domain.Models.Entities.Bus", "RouteId");
+
                     b.Navigation("Driver");
+
+                    b.Navigation("Route");
                 });
 
             modelBuilder.Entity("BTS.Domain.Models.Entities.Route", b =>
                 {
-                    b.HasOne("BTS.Domain.Models.Entities.Bus", "Bus")
-                        .WithMany("Routes")
-                        .HasForeignKey("BusId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("BTS.Domain.Models.Entities.Terminal", "DestinationTerminal")
                         .WithMany("DestinationRoutes")
                         .HasForeignKey("DestinationTerminalId")
@@ -281,19 +283,18 @@ namespace BTS.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.Navigation("Bus");
-
                     b.Navigation("DestinationTerminal");
 
                     b.Navigation("OriginTerminal");
                 });
 
-            modelBuilder.Entity("BTS.Domain.Models.Entities.Bus", b =>
+            modelBuilder.Entity("BTS.Domain.Models.Entities.Driver", b =>
                 {
-                    b.Navigation("Routes");
+                    b.Navigation("Bus")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("BTS.Domain.Models.Entities.Driver", b =>
+            modelBuilder.Entity("BTS.Domain.Models.Entities.Route", b =>
                 {
                     b.Navigation("Bus")
                         .IsRequired();

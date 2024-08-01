@@ -4,6 +4,7 @@ using BTS.Core.Results;
 using BTS.Core.Results.Errors;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Extensions;
+using BTS.Domain.Models.Dtos.Bus;
 using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
 using MediatR;
@@ -31,7 +32,11 @@ namespace BTS.Core.Commands.Handlers
             // Create new bus in the database
             await _repository.CreateAsync(newBus, cancellationToken);
 
-            return Result.Success("Bus created successfully.");
+            return Result.Success(new
+            {
+                Message = "Bus created successfully.",
+                Resource = _mapper.Map<BusDto>(newBus)
+            });
         }
 
         public async Task<Result> Handle(UpdateBusCommand request, CancellationToken cancellationToken)
@@ -46,13 +51,17 @@ namespace BTS.Core.Commands.Handlers
             // Update driver in the database
             await _repository.UpdateAsync(updatedBus, cancellationToken);
 
-            return Result.Success("Bus updated successfully.");
+            return Result.Success(new
+            {
+                Message = "Bus updated successfully.",
+                Resource = _mapper.Map<BusDto>(updatedBus),
+            });
         }
 
         public async Task<Result> Handle(UpdateBusStatusCommand request, CancellationToken cancellationToken)
         {
             // Check if the bus to update is exist in the database
-            if (!_repository.IsExist(data => data.Id == request.DriverId, out Bus bus))
+            if (!_repository.IsExist(data => data.Id == request.BusId, out Bus bus))
                 return Result.Failure(BusError.NotFound);
 
             // Update driver status
@@ -71,7 +80,11 @@ namespace BTS.Core.Commands.Handlers
             // Update driver in the database
             await _repository.UpdateAsync(bus, cancellationToken);
 
-            return Result.Success("Bus status updated successfully.");
+            return Result.Success(new
+            {
+                Message = "Bus status updated successfully.",
+                Resource = _mapper.Map<BusDto>(bus),
+            });
         }
     }
 }

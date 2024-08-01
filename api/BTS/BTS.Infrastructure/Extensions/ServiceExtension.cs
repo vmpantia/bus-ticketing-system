@@ -21,6 +21,7 @@ namespace BTS.Infrastructure.Extensions
         private static IServiceCollection AddRepositories(this IServiceCollection services) =>
             services.AddScoped<IUnitOfWork, UnitOfWork>()
                     .AddScoped<IDriverRepository, DriverRepository>()
-                    .AddScoped<IBusRepository, BusRepository>();
+                    .AddScoped<IBusRepository, BusRepository>()
+                    .AddScoped<IRouteRepository, RouteRepository>();
     }
 }

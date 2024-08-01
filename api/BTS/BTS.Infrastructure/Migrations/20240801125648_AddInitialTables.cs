@@ -62,11 +62,42 @@ namespace BTS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Routes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OriginTerminalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    DestinationTerminalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Routes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Routes_Terminals_DestinationTerminalId",
+                        column: x => x.DestinationTerminalId,
+                        principalTable: "Terminals",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Routes_Terminals_OriginTerminalId",
+                        column: x => x.OriginTerminalId,
+                        principalTable: "Terminals",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Buses",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     DriverId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RouteId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     BusNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PlateNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Make = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -88,42 +119,10 @@ namespace BTS.Infrastructure.Migrations
                         column: x => x.DriverId,
                         principalTable: "Drivers",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Routes",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BusId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    OriginTerminalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    DestinationTerminalId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
-                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Routes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Routes_Buses_BusId",
-                        column: x => x.BusId,
-                        principalTable: "Buses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Routes_Terminals_DestinationTerminalId",
-                        column: x => x.DestinationTerminalId,
-                        principalTable: "Terminals",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Routes_Terminals_OriginTerminalId",
-                        column: x => x.OriginTerminalId,
-                        principalTable: "Terminals",
+                        name: "FK_Buses_Routes_RouteId",
+                        column: x => x.RouteId,
+                        principalTable: "Routes",
                         principalColumn: "Id");
                 });
 
@@ -135,9 +134,11 @@ namespace BTS.Infrastructure.Migrations
                 filter: "[DriverId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Routes_BusId",
-                table: "Routes",
-                column: "BusId");
+                name: "IX_Buses_RouteId",
+                table: "Buses",
+                column: "RouteId",
+                unique: true,
+                filter: "[RouteId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Routes_DestinationTerminalId",
@@ -154,16 +155,16 @@ namespace BTS.Infrastructure.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Routes");
-
-            migrationBuilder.DropTable(
                 name: "Buses");
 
             migrationBuilder.DropTable(
-                name: "Terminals");
+                name: "Drivers");
 
             migrationBuilder.DropTable(
-                name: "Drivers");
+                name: "Routes");
+
+            migrationBuilder.DropTable(
+                name: "Terminals");
         }
     }
 }

@@ -8,6 +8,7 @@ namespace BTS.Core.Commands.Models.Bus
         public CreateBusCommand(CreateBusDto dto, string requestor = "System")
         {
             DriverId = dto.DriverId;
+            RouteId = dto.RouteId;
             BusNo = dto.BusNo;
             PlateNo = dto.PlateNo;
             Make = dto.Make;
@@ -17,6 +18,7 @@ namespace BTS.Core.Commands.Models.Bus
         }
 
         public Guid? DriverId { get; init; }
+        public Guid? RouteId { get; init; }
         public string BusNo { get; init; }
         public string PlateNo { get; init; }
         public string Make { get; init; }

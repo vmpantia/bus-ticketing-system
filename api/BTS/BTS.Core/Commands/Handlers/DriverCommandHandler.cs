@@ -4,6 +4,7 @@ using BTS.Core.Results;
 using BTS.Core.Results.Errors;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Extensions;
+using BTS.Domain.Models.Dtos.Driver;
 using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
 using MediatR;
@@ -31,7 +32,11 @@ namespace BTS.Core.Commands.Handlers
             // Create new driver in the database
             await _repository.CreateAsync(newDriver, cancellationToken);
 
-            return Result.Success("Driver created successfully.");
+            return Result.Success(new
+            {
+                Message = "Driver created successfully.",
+                Resource = _mapper.Map<DriverDto>(newDriver)
+            });
         }
 
         public async Task<Result> Handle(UpdateDriverCommand request, CancellationToken cancellationToken)
@@ -46,7 +51,11 @@ namespace BTS.Core.Commands.Handlers
             // Update driver in the database
             await _repository.UpdateAsync(updatedDriver, cancellationToken);
 
-            return Result.Success("Driver updated successfully.");
+            return Result.Success(new
+            {
+                Message = "Driver updated successfully.",
+                Resource = _mapper.Map<DriverDto>(updatedDriver)
+            });
         }
 
         public async Task<Result> Handle(UpdateDriverStatusCommand request, CancellationToken cancellationToken)
@@ -71,7 +80,11 @@ namespace BTS.Core.Commands.Handlers
             // Update driver in the database
             await _repository.UpdateAsync(driver, cancellationToken);
 
-            return Result.Success("Driver status updated successfully.");
+            return Result.Success(new 
+            {
+                Message = "Driver status updated successfully.",
+                Resource = _mapper.Map<DriverDto>(driver)
+            });
         }
     }
 }

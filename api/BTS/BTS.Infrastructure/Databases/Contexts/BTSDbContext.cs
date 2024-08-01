@@ -22,6 +22,10 @@ namespace BTS.Infrastructure.Databases.Contexts
                 b.HasOne(b => b.Driver)
                  .WithOne(d => d.Bus)
                  .IsRequired(false);
+
+                b.HasOne(b => b.Route)
+                 .WithOne(r => r.Bus)
+                 .IsRequired(false);
             });
 
             modelBuilder.Entity<Driver>(d =>
@@ -38,9 +42,8 @@ namespace BTS.Infrastructure.Databases.Contexts
                 r.HasQueryFilter(data => data.Status != CommonStatus.Deleted);
 
                 r.HasOne(r => r.Bus)
-                 .WithMany(b => b.Routes)
-                 .HasForeignKey(r => r.BusId)
-                 .IsRequired();
+                 .WithOne(b => b.Route)
+                 .IsRequired(false);
 
                 r.HasOne(r => r.OriginTerminal)
                  .WithMany(t => t.OriginRoutes)

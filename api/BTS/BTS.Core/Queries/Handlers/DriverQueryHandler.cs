@@ -44,7 +44,7 @@ namespace BTS.Core.Queries.Handlers
                 return Result.Failure(DriverError.NotFound);
 
             // Get driver from the database
-            var driver = await _repository.GetDriverFullInfoAsync(data => data.Id == request.Id, cancellationToken);
+            var driver = await _repository.GetDriverFullInfoAsync(expression, cancellationToken);
 
             // Check if the driver from database is NULL
             if (driver is null) return Result.Failure(DriverError.Null);

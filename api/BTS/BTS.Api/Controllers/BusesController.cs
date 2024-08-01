@@ -1,4 +1,6 @@
 ﻿using BTS.Core.Commands.Models.Bus;
+using BTS.Core.Queries.Models.Bus;
+using BTS.Core.Queries.Models.Driver;
 using BTS.Domain.Models.Dtos.Bus;
 using BTS.Domain.Models.Enums;
 using MediatR;
@@ -11,6 +13,14 @@ namespace BTS.Api.Controllers
     public class BusesController : BaseController
     {
         public BusesController(IMediator mediator) : base(mediator) { }
+
+        [HttpGet]
+        public async Task<IActionResult> GetBuses() =>
+            await HandleRequestAsync(new GetDriversQuery());
+
+        [HttpGet("{busId}")]
+        public async Task<IActionResult> GetBus(Guid busId) =>
+            await HandleRequestAsync(new GetBusByIdQuery(busId));
 
         [HttpPost]
         public async Task<IActionResult> PostCreateBus([FromBody] CreateBusDto dto) =>

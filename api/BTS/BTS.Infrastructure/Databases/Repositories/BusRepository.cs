@@ -16,7 +16,8 @@ namespace BTS.Infrastructure.Databases.Repositories
             // Get all bus stored in the database
             var entities = await GetAllAsync(token);
             var result = await entities.Include(tbl => tbl.Driver)
-                                       .Include(tbl => tbl.Routes)
+                                       .Include(tbl => tbl.Route)
+                                       .AsSplitQuery()
                                        .ToListAsync(token);
 
             return result;
@@ -27,7 +28,8 @@ namespace BTS.Infrastructure.Databases.Repositories
             // Get bus stored in the database
             var entities = await GetByExpressionAsync(expression, token);
             var result = await entities.Include(tbl => tbl.Driver)
-                                       .Include(tbl => tbl.Routes)
+                                       .Include(tbl => tbl.Route)
+                                       .AsSplitQuery()
                                        .FirstAsync(token);
 
             return result;

@@ -5,7 +5,6 @@ namespace BTS.Domain.Models.Entities
 {
     public class Route : BaseEntity<Guid, CommonStatus>
     {
-        public required Guid BusId { get; set; }
         public required Guid OriginTerminalId { get; set; }
         public required Guid DestinationTerminalId { get; set; }
 

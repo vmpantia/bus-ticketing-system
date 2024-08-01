@@ -13,6 +13,7 @@ namespace BTS.Domain.Models.Dtos.Bus
 
         // Related Data
         public required DriverLite? Driver { get; set; }
+        public required RouteLite? Route { get; set; }
 
         public required DateTimeOffset LastUpdateAt { get; set; }
         public required string LastUpdateBy { get; set; }

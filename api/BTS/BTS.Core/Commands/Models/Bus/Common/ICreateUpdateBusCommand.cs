@@ -6,6 +6,7 @@ namespace BTS.Core.Commands.Models.Bus.Common
     public interface ICreateUpdateBusCommand : IRequest<Result>
     {
         Guid? DriverId { get; init; }
+        Guid? RouteId { get; init; }
         string BusNo { get; init; }
         string PlateNo { get; init; }
         string Make { get; init; }

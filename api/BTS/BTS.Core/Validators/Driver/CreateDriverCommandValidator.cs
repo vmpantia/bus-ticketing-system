@@ -10,7 +10,7 @@ namespace BTS.Core.Validators.Driver
 
         public async override Task<bool> IsLicenseNumberUniqueAsync(CreateDriverCommand command, string license, CancellationToken token)
         {
-            // Check if the updated license number is already used by other driver
+            // Check if the new license number is already used by other driver
             bool isExists = await _repository.IsExistAsync(data => data.LicenseNo == license, token);
             return !isExists;
         }
