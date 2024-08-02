@@ -1,5 +1,5 @@
 ﻿using BTS.Core.Commands.Models.Driver.Common;
-using BTS.Core.Results;
+using BTS.Domain.Results;
 using BTS.Domain.Models.Dtos.Driver;
 using MediatR;
 

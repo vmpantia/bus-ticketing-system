@@ -62,6 +62,32 @@ namespace BTS.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    IsAdmin = table.Column<bool>(type: "bit", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Routes",
                 columns: table => new
                 {
@@ -149,6 +175,11 @@ namespace BTS.Infrastructure.Migrations
                 name: "IX_Routes_OriginTerminalId",
                 table: "Routes",
                 column: "OriginTerminalId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username_Email_Password_IsEmailConfirmed_IsAdmin",
+                table: "Users",
+                columns: new[] { "Username", "Email", "Password", "IsEmailConfirmed", "IsAdmin" });
         }
 
         /// <inheritdoc />
@@ -156,6 +187,9 @@ namespace BTS.Infrastructure.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Buses");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Drivers");

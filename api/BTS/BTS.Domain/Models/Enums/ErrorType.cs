@@ -7,5 +7,6 @@
         NULL,
         NotFound,
         ValidationFailure,
+        InvalidCredentials,
     }
 }

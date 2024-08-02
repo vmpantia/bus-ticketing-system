@@ -1,12 +1,12 @@
 ﻿using AutoMapper;
 using BTS.Core.Commands.Models.Bus;
-using BTS.Core.Results;
-using BTS.Core.Results.Errors;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Extensions;
 using BTS.Domain.Models.Dtos.Bus;
 using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
+using BTS.Domain.Results;
+using BTS.Domain.Results.Errors;
 using MediatR;
 
 namespace BTS.Core.Commands.Handlers

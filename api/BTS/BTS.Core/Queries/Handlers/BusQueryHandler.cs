@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using BTS.Core.Results.Errors;
-using BTS.Core.Results;
+using BTS.Domain.Results.Errors;
+using BTS.Domain.Results;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Models.Entities;
 using MediatR;

@@ -1,7 +1,8 @@
 ﻿using BTS.Core.Commands.Models.Driver;
-using BTS.Core.Results;
-using BTS.Core.Results.Errors;
+using BTS.Core.Extensions;
 using BTS.Domain.Extensions;
+using BTS.Domain.Results;
+using BTS.Domain.Results.Errors;
 using FluentValidation;
 using FluentValidation.Results;
 using MediatR;
@@ -28,7 +29,8 @@ namespace BTS.Core.Behaviors
             // Validate request
             ValidationResult validationResult = await validator.ValidateAsync(request, cancellationToken);
             if (!validationResult.IsValid)
-                return (TResponse)Result.Failure(CommonError.ValidationFailure<CreateDriverCommand>(validationResult.Errors));
+                return (TResponse)Result.Failure(CommonError.ValidationFailure<CreateDriverCommand>(validationResult.Errors
+                                                                                                                    .ConvertToPropertyErrors()));
 
             return await next();
         }

@@ -1,7 +1,7 @@
 ﻿using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
 
-namespace BTS.Core.Results.Errors
+namespace BTS.Domain.Results.Errors
 {
     public class DriverError
     {

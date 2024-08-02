@@ -1,4 +1,4 @@
-﻿using BTS.Core.Results;
+﻿using BTS.Domain.Results;
 using MediatR;
 
 namespace BTS.Core.Queries.Models.Bus

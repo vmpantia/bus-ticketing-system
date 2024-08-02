@@ -1,6 +1,6 @@
 ﻿using BTS.Domain.Models.Enums;
 
-namespace BTS.Core.Results
+namespace BTS.Domain.Results
 {
     public class Result
     {

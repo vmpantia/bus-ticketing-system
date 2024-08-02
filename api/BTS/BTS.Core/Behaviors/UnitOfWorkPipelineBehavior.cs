@@ -1,6 +1,6 @@
-﻿using BTS.Core.Results;
-using BTS.Domain.Contractors.Repositories.Common;
+﻿using BTS.Domain.Contractors.Repositories.Common;
 using BTS.Domain.Extensions;
+using BTS.Domain.Results;
 using MediatR;
 using System.Transactions;
 

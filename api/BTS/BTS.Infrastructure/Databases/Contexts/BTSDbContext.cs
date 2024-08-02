@@ -12,6 +12,7 @@ namespace BTS.Infrastructure.Databases.Contexts
         public DbSet<Driver> Drivers { get; set; }
         public DbSet<Route> Routes { get; set; }
         public DbSet<Terminal> Terminals { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -73,6 +74,12 @@ namespace BTS.Infrastructure.Databases.Contexts
                  .HasForeignKey(r => r.DestinationTerminalId)
                  .OnDelete(DeleteBehavior.NoAction)
                  .IsRequired();
+            });
+
+            modelBuilder.Entity<User>(u =>
+            {
+                u.HasQueryFilter(data => data.Status != CommonStatus.Deleted);
+                u.HasIndex(u => new { u.Username, u.Email, u.Password, u.IsEmailConfirmed, u.IsAdmin });
             });
         }
     }

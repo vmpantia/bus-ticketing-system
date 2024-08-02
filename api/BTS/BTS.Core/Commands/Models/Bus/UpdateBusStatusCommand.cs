@@ -1,4 +1,4 @@
-﻿using BTS.Core.Results;
+﻿using BTS.Domain.Results;
 using BTS.Domain.Models.Enums;
 using MediatR;
 

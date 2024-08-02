@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BTS.Api.Extensions
 {
-    public static class MigrationExtensions
+    public static class MigrationExtension
     {
         public static void ApplyMigrations(this IApplicationBuilder app)
         {
