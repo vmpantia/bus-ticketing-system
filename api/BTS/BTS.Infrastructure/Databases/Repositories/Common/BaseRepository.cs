@@ -1,6 +1,7 @@
 ﻿using BTS.Domain.Contractors.Repositories.Common;
 using BTS.Infrastructure.Databases.Contexts;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Frozen;
 using System.Linq.Expressions;
 
 namespace BTS.Infrastructure.Databases.Repositories.Common
@@ -24,6 +25,9 @@ namespace BTS.Infrastructure.Databases.Repositories.Common
 
         public async Task<TEntity> GetOneAsync(Expression<Func<TEntity, bool>> expression, CancellationToken token) =>
             await _table.Where(expression).FirstAsync(token);
+
+        public TEntity GetOne(Expression<Func<TEntity, bool>> expression) =>
+            _table.Where(expression).First(expression);
 
         public bool IsExist(Expression<Func<TEntity, bool>> expression, out TEntity entity)
         {

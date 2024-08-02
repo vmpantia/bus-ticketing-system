@@ -26,7 +26,7 @@ namespace BTS.Core.Commands.Handlers
 
         public async Task<Result> Handle(CreateDriverCommand request, CancellationToken cancellationToken)
         {
-            // Convert dto to entity (prepare new driver info)
+            // Convert request to entity (prepare new driver info)
             var newDriver = _mapper.Map<Driver>(request);
 
             // Create new driver in the database
@@ -45,7 +45,7 @@ namespace BTS.Core.Commands.Handlers
             if (!_repository.IsExist(data => data.Id == request.DriverIdToUpdate, out Driver driver))
                 return Result.Failure(DriverError.NotFound);
 
-            // Convert dto to entity (prepare updated driver info)
+            // Convert request to entity (prepare updated driver info)
             var updatedDriver = _mapper.Map(request, driver);
 
             // Update driver in the database

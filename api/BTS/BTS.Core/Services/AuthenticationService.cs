@@ -1,9 +1,7 @@
-﻿using BTS.Domain.Results;
-using BTS.Domain.Results.Errors;
-using BTS.Domain.Contractors.Authentication;
+﻿using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Contractors.Repositories;
-using BTS.Domain.Models.Entities;
 using BTS.Domain.Contractors.Services;
+using BTS.Domain.Models.Entities;
 
 namespace BTS.Core.Services
 {
@@ -18,27 +16,17 @@ namespace BTS.Core.Services
             _jwtProvider = jwtProvider;
         }
 
-        public Result Authenticate(string userNameOrEmail, string password)
+        public string Authenticate(string userNameOrEmail, string password, out User user)
         {
-            // Check if the user exist based on the userName or Email
-            if (!_userRepository.IsExist(data => data.Username.Equals(userNameOrEmail) ||
-                                                 data.Email.Equals(userNameOrEmail),
-                                        out User user))
-                return Result.Failure(UserError.NotFound);
-
-            // Check if the user password matched on the input password
-            if (!user.Password.Equals(password))
-                return Result.Failure(UserError.InvalidCredentials);
+            // Get user based on the credentials provided
+            user = _userRepository.GetOne(data => (data.Username.Equals(userNameOrEmail) ||
+                                                   data.Email.Equals(userNameOrEmail)) &&
+                                                  data.Password.Equals(password));
 
             // Generate access token for user
-            var token = _jwtProvider.Generate(user);
+            var accessToken = _jwtProvider.Generate(user);
 
-            return Result.Success(new
-            {
-                Email = user.Email,
-                Name = $"{user.FirstName} {user.LastName}",
-                Token = token,
-            });
+            return accessToken;
         }
     }
 }

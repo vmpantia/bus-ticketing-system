@@ -32,7 +32,7 @@ namespace BTS.Infrastructure.Authentication
             var token = new JwtSecurityToken(
                 _setting.Issuer,
                 _setting.Audience,
-                null,
+                claims,
                 null,
                 DateTimeExtension.GetCurrentDateTimeOffsetUtc().AddHours(1).DateTime,
                 signingCredentials);

@@ -1,9 +1,9 @@
-﻿using BTS.Domain.Results;
+﻿using BTS.Domain.Models.Entities;
 
 namespace BTS.Domain.Contractors.Services
 {
     public interface IAuthenticationService
     {
-        Result Authenticate(string userNameOrEmail, string password);
+        string Authenticate(string userNameOrEmail, string password, out User user);
     }
 }

@@ -6,7 +6,6 @@
         Mapping,
         NULL,
         NotFound,
-        ValidationFailure,
-        InvalidCredentials,
+        ValidationFailure
     }
 }

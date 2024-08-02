@@ -26,7 +26,7 @@ namespace BTS.Core.Commands.Handlers
 
         public async Task<Result> Handle(CreateBusCommand request, CancellationToken cancellationToken)
         {
-            // Convert dto to entity (prepare new bus info)
+            // Convert request to entity (prepare new bus info)
             var newBus = _mapper.Map<Bus>(request);
 
             // Create new bus in the database
@@ -45,7 +45,7 @@ namespace BTS.Core.Commands.Handlers
             if (!_repository.IsExist(data => data.Id == request.BusIdToUpdate, out Bus bus))
                 return Result.Failure(BusError.NotFound);
 
-            // Convert dto to entity (prepare updated driver info)
+            // Convert request to entity (prepare updated driver info)
             var updatedBus = _mapper.Map(request, bus);
 
             // Update driver in the database
