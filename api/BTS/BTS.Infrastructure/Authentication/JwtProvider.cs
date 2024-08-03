@@ -15,12 +15,14 @@ namespace BTS.Infrastructure.Authentication
 
         public string Generate(User user)
         {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
             // Create an instance of claims for specific user
             var claims = new Claim[] {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Name, $"{user.FirstName} {user.LastName}"),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(Common.CLAIM_NAME_ROLE, user.IsAdmin ? Common.CLAIM_VALUE_ROLE_ADMIN : Common.CLAIM_VALUE_ROLE_USER)
+                new Claim(Common.CLAIM_NAME_USER_ROLE, user.IsAdmin ? Common.CLAIM_VALUE_ROLE_ADMIN : Common.CLAIM_VALUE_ROLE_USER)
             };
 
             // Create an instance of signing credentials user for instace of jwt security token
@@ -29,19 +31,17 @@ namespace BTS.Infrastructure.Authentication
                     SecurityAlgorithms.HmacSha256);
 
             // Create an instance of jwt security token
-            var token = new JwtSecurityToken(
-                _setting.Issuer,
-                _setting.Audience,
-                claims,
-                null,
-                DateTimeExtension.GetCurrentDateTimeOffsetUtc().AddHours(1).DateTime,
-                signingCredentials);
+            var securityToken = new JwtSecurityToken(
+                issuer: _setting.Issuer,
+                audience: _setting.Audience,
+                claims: claims,
+                expires: DateTimeExtension.GetCurrentDateTimeOffsetUtc().AddHours(1).DateTime,
+                signingCredentials: signingCredentials);
 
             // Generate token value
-            var tokenValue = new JwtSecurityTokenHandler()
-                .WriteToken(token);
+            var accessToken = tokenHandler.WriteToken(securityToken);
 
-            return tokenValue;
+            return accessToken;
         }
     }
 }

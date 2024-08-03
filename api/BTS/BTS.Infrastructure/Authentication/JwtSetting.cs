@@ -26,7 +26,7 @@ namespace BTS.Infrastructure.Authentication
             ValidateIssuerSigningKey = true,
             ValidIssuer = Issuer,
             ValidAudience = Audience,
-            IssuerSigningKey = new SymmetricSecurityKey(SecretKey)
+            IssuerSigningKey = new SymmetricSecurityKey(SecretKey),
         };
 
         public static JwtSetting FromConfiguration(IConfiguration configuration)

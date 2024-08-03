@@ -1,5 +1,4 @@
-﻿using BTS.Domain.Constants;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 
 namespace BTS.Api.Extensions
 {
@@ -34,21 +33,6 @@ namespace BTS.Api.Extensions
                         },
                         new string[]{ }
                     }
-                });
-            });
-        }
-
-        public static void AddRBACAuthorization(this IServiceCollection services)
-        {
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(Common.AUTHORIZE_ROLE_ADMIN, policy =>
-                {
-                    policy.RequireClaim(Common.CLAIM_NAME_ROLE, Common.CLAIM_VALUE_ROLE_ADMIN);
-                });
-                options.AddPolicy(Common.AUTHORIZE_ROLE_USER, policy =>
-                {
-                    policy.RequireClaim(Common.CLAIM_NAME_ROLE, Common.CLAIM_VALUE_ROLE_USER);
                 });
             });
         }

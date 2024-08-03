@@ -7,7 +7,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddCore();
-builder.Services.AddRBACAuthorization();
 
 // Setup Cors
 builder.Services.AddCors(options =>

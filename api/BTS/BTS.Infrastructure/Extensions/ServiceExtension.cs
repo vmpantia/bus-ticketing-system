@@ -1,4 +1,5 @@
-﻿using BTS.Domain.Contractors.Authentication;
+﻿using BTS.Domain.Constants;
+using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Contractors.Repositories.Common;
 using BTS.Infrastructure.Authentication;
@@ -17,6 +18,7 @@ namespace BTS.Infrastructure.Extensions
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddJwtAuthentication(configuration);
+            services.AddRBACAuthorization();
             services.AddDbContext(configuration);
             services.AddRepositories();
         }
@@ -42,6 +44,21 @@ namespace BTS.Infrastructure.Extensions
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options => options.TokenValidationParameters = jwtSetting.TokenValidationParameters);
 
+        }
+
+        public static void AddRBACAuthorization(this IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Common.AUTHORIZE_ROLE_ADMIN, policy =>
+                {
+                    policy.RequireClaim(Common.CLAIM_NAME_USER_ROLE, Common.CLAIM_VALUE_ROLE_ADMIN);
+                });
+                options.AddPolicy(Common.AUTHORIZE_ROLE_USER, policy =>
+                {
+                    policy.RequireClaim(Common.CLAIM_NAME_USER_ROLE, Common.CLAIM_VALUE_ROLE_USER);
+                });
+            });
         }
     }
 }
