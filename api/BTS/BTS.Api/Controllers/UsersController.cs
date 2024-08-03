@@ -1,6 +1,5 @@
-﻿using BTS.Core.Commands.Models.Bus;
-using BTS.Core.Commands.Models.User;
-using BTS.Domain.Constants;
+﻿using BTS.Core.Commands.Models.User;
+using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Models.Dtos.User;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +12,7 @@ namespace BTS.Api.Controllers
     [Authorize]
     public class UsersController : BaseController
     {
-        public UsersController(IMediator mediator) : base(mediator) { }
+        public UsersController(IMediator mediator, IJwtProvider jwtProvider) : base(mediator, jwtProvider) { }
 
         [HttpPost("login")]
         [AllowAnonymous]
@@ -23,6 +22,6 @@ namespace BTS.Api.Controllers
         [HttpPost]
         [AllowAnonymous]
         public async Task<IActionResult> PostCreateUserAdmin([FromBody] CreateUserDto dto) =>
-            await HandleRequestAsync(new CreateUserCommand(dto, true));
+            await HandleRequestAsync(new CreateUserCommand(dto, true, Email));
     }
 }

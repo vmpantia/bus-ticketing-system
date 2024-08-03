@@ -2,6 +2,7 @@
 using BTS.Core.Queries.Models.Bus;
 using BTS.Core.Queries.Models.Driver;
 using BTS.Domain.Constants;
+using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Models.Dtos.Bus;
 using BTS.Domain.Models.Enums;
 using MediatR;
@@ -15,7 +16,7 @@ namespace BTS.Api.Controllers
     [Authorize]
     public class BusesController : BaseController
     {
-        public BusesController(IMediator mediator) : base(mediator) { }
+        public BusesController(IMediator mediator, IJwtProvider jwtProvider) : base(mediator, jwtProvider) { }
 
         [HttpGet]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
@@ -30,16 +31,16 @@ namespace BTS.Api.Controllers
         [HttpPost]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
         public async Task<IActionResult> PostCreateBus([FromBody] CreateBusDto dto) =>
-            await HandleRequestAsync(new CreateBusCommand(dto));
+            await HandleRequestAsync(new CreateBusCommand(dto, Email));
 
         [HttpPut("{busId}")]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
         public async Task<IActionResult> PutUpdateBus(Guid busId, [FromBody] UpdateBusDto dto) =>
-            await HandleRequestAsync(new UpdateBusCommand(busId, dto));
+            await HandleRequestAsync(new UpdateBusCommand(busId, dto, Email));
 
         [HttpPatch("{busId}")]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
         public async Task<IActionResult> PatchUpdateBusStatus(Guid busId, [FromQuery] CommonStatus newStatus) =>
-            await HandleRequestAsync(new UpdateBusStatusCommand(busId, newStatus));
+            await HandleRequestAsync(new UpdateBusStatusCommand(busId, newStatus, Email));
     }
 }

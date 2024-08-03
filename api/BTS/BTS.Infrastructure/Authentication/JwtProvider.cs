@@ -43,5 +43,17 @@ namespace BTS.Infrastructure.Authentication
 
             return accessToken;
         }
+
+        public string? GetValueByClaim(string claimName, string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
+            // Decode the JWT token
+            var handler = new JwtSecurityTokenHandler();
+            var jsonToken = handler.ReadToken(token);
+            var securityToken = (JwtSecurityToken)handler.ReadToken(token);
+
+            return securityToken.Claims.FirstOrDefault(c => c.Type.Equals(claimName))?.Value;
+        }
     }
 }

@@ -1,6 +1,7 @@
 using BTS.Core.Commands.Models.Driver;
 using BTS.Core.Queries.Models.Driver;
 using BTS.Domain.Constants;
+using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Models.Dtos.Driver;
 using BTS.Domain.Models.Enums;
 using MediatR;
@@ -14,7 +15,7 @@ namespace BTS.Api.Controllers
     [Authorize]
     public class DriversController : BaseController
     {
-        public DriversController(IMediator mediator) : base(mediator) { }
+        public DriversController(IMediator mediator, IJwtProvider jwtProvider) : base(mediator, jwtProvider) { }
 
         [HttpGet]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
@@ -29,16 +30,16 @@ namespace BTS.Api.Controllers
         [HttpPost]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
         public async Task<IActionResult> PostCreateDriver([FromBody] CreateDriverDto dto) =>
-            await HandleRequestAsync(new CreateDriverCommand(dto));
+            await HandleRequestAsync(new CreateDriverCommand(dto, Email));
 
         [HttpPut("{driverId}")]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
         public async Task<IActionResult> PutUpdateDriver(Guid driverId, [FromBody] UpdateDriverDto dto) =>
-            await HandleRequestAsync(new UpdateDriverCommand(driverId, dto));
+            await HandleRequestAsync(new UpdateDriverCommand(driverId, dto, Email));
 
         [HttpPatch("{driverId}")]
         [Authorize(Common.AUTHORIZE_ROLE_ADMIN)]
         public async Task<IActionResult> PatchUpdateDriverStatus(Guid driverId, [FromQuery] CommonStatus newStatus) =>
-            await HandleRequestAsync(new UpdateDriverStatusCommand(driverId, newStatus));
+            await HandleRequestAsync(new UpdateDriverStatusCommand(driverId, newStatus, Email));
     }
 }

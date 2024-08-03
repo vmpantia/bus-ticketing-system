@@ -1,4 +1,5 @@
-﻿using BTS.Domain.Models.Entities;
+﻿using BTS.Domain.Extensions;
+using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,7 +7,27 @@ namespace BTS.Infrastructure.Databases.Contexts
 {
     public class BTSDbContext : DbContext
     {
-        public BTSDbContext(DbContextOptions options) : base(options) { }
+        private readonly List<User> _initialUsers;
+        public BTSDbContext(DbContextOptions options) : base(options)
+        {
+            _initialUsers = new List<User>
+            {
+                new User
+                {
+                    Id = Guid.NewGuid(),
+                    Username = "admin",
+                    Email = "test_admin@test.com",
+                    Password = "P@ssw0rd",
+                    FirstName = "Admin",
+                    LastName = "Admin",
+                    IsEmailConfirmed = true,
+                    IsAdmin = true,
+                    Status = CommonStatus.Active,
+                    CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc(),
+                    CreatedBy = "System"
+                }
+            };
+        }
 
         public DbSet<Bus> Buses { get; set; }
         public DbSet<Driver> Drivers { get; set; }
@@ -79,7 +100,10 @@ namespace BTS.Infrastructure.Databases.Contexts
             modelBuilder.Entity<User>(u =>
             {
                 u.HasQueryFilter(data => data.Status != CommonStatus.Deleted);
+
                 u.HasIndex(u => new { u.Username, u.Email, u.Password, u.IsEmailConfirmed, u.IsAdmin });
+
+                u.HasData(_initialUsers);
             });
         }
     }

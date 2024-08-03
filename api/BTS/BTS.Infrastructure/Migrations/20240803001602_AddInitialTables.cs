@@ -152,6 +152,11 @@ namespace BTS.Infrastructure.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Email", "FirstName", "IsAdmin", "IsEmailConfirmed", "LastName", "MiddleName", "Password", "Status", "UpdatedAt", "UpdatedBy", "Username" },
+                values: new object[] { new Guid("e741aacc-e0b1-48d8-a95d-edc36c896327"), new DateTimeOffset(new DateTime(2024, 8, 3, 0, 16, 1, 777, DateTimeKind.Unspecified).AddTicks(8525), new TimeSpan(0, 0, 0, 0, 0)), "System", null, null, "test_admin@test.com", "Admin", true, true, "Admin", null, "P@ssw0rd", 0, null, null, "admin" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Buses_DriverId",
                 table: "Buses",

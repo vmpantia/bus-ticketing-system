@@ -313,6 +313,22 @@ namespace BTS.Infrastructure.Migrations
                     b.HasIndex("Username", "Email", "Password", "IsEmailConfirmed", "IsAdmin");
 
                     b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("e741aacc-e0b1-48d8-a95d-edc36c896327"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2024, 8, 3, 0, 16, 1, 777, DateTimeKind.Unspecified).AddTicks(8525), new TimeSpan(0, 0, 0, 0, 0)),
+                            CreatedBy = "System",
+                            Email = "test_admin@test.com",
+                            FirstName = "Admin",
+                            IsAdmin = true,
+                            IsEmailConfirmed = true,
+                            LastName = "Admin",
+                            Password = "P@ssw0rd",
+                            Status = 0,
+                            Username = "admin"
+                        });
                 });
 
             modelBuilder.Entity("BTS.Domain.Models.Entities.Bus", b =>

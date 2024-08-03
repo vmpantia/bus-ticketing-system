@@ -3,14 +3,30 @@ using BTS.Domain.Results.Errors;
 using BTS.Domain.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using BTS.Domain.Contractors.Authentication;
+using System.IdentityModel.Tokens.Jwt;
+using BTS.Api.Extensions;
 
 namespace BTS.Api.Controllers
 {
     public class BaseController : ControllerBase
     {
         protected readonly IMediator _mediator;
-        public BaseController(IMediator mediator) =>
+        protected readonly IJwtProvider _jwtProvider;
+        public BaseController(IMediator mediator, IJwtProvider jwtProvider)
+        {
             _mediator = mediator;
+            _jwtProvider = jwtProvider;
+        }
+
+        public string Email 
+        {
+            get
+            {
+                var token = HttpContext.GetBearerToken();
+                return _jwtProvider.GetValueByClaim(JwtRegisteredClaimNames.Email, token) ?? "System";
+            }
+        }
 
         protected async Task<IActionResult> HandleRequestAsync<TRequest>(TRequest request)
             where TRequest : class
