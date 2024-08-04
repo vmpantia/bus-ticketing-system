@@ -12,8 +12,9 @@ using MediatR;
 namespace BTS.Core.Commands.Handlers
 {
     public class AuthCommandHandler :
-        IRequestHandler<LoginCommand, Result>,
-        IRequestHandler<LoginViaMagicLinkCommand, Result>
+        IRequestHandler<LoginByCredentialsCommand, Result>,
+        IRequestHandler<LoginByEmailCommand, Result>,
+        IRequestHandler<LoginByTokenCommand, Result>
     {
         private readonly IUserRepository _userRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
@@ -30,10 +31,10 @@ namespace BTS.Core.Commands.Handlers
             _publishEndpoint = publishEndpoint;
         }
 
-        public async Task<Result> Handle(LoginCommand request, CancellationToken cancellationToken) =>
+        public async Task<Result> Handle(LoginByCredentialsCommand request, CancellationToken cancellationToken) =>
             await Task.Run(() =>
             {
-                var token = _authenticationService.Authenticate(request.UsernameOrEmail, request.Password, out User user);
+                var token = _authenticationService.AuthenticateByCredentials(request.UsernameOrEmail, request.Password, out User user);
                 return Result.Success(new
                 {
                     Email = user.Email,
@@ -42,10 +43,10 @@ namespace BTS.Core.Commands.Handlers
                 });
             });
 
-        public async Task<Result> Handle(LoginViaMagicLinkCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(LoginByEmailCommand request, CancellationToken cancellationToken)
         {
             // Generate token used for magic link
-            var token = _authenticationService.Authenticate(request.Email, out User user);
+            var token = _authenticationService.AuthenticateByEmail(request.Email, out User user);
 
             // Create a record for the generated token
             var result = await _accessTokenRepository.CreateAsync(new AccessToken
@@ -67,5 +68,17 @@ namespace BTS.Core.Commands.Handlers
 
             return Result.Success("Magic link created, Kindly check on your email.");
         }
+
+        public async Task<Result> Handle(LoginByTokenCommand request, CancellationToken cancellationToken) =>
+            await Task.Run(() =>
+            {
+                var token = _authenticationService.AuthenticateByToken(request.Token, out User user);
+                return Result.Success(new
+                {
+                    Email = user.Email,
+                    Name = $"{user.FirstName} {user.LastName}",
+                    Token = token
+                });
+            });
     }
 }

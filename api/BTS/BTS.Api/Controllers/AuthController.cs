@@ -13,11 +13,15 @@ namespace BTS.Api.Controllers
         public AuthController(IMediator mediator, IJwtProvider jwtProvider) : base(mediator, jwtProvider) { }
 
         [HttpPost("login")]
-        public async Task<IActionResult> PostLoginUser([FromBody] LoginDto dto) =>
-            await HandleRequestAsync(new LoginCommand(dto.UsernameOrEmail, dto.Password));
+        public async Task<IActionResult> PostLoginByCredentials([FromBody] LoginByCredentialsDto dto) =>
+            await HandleRequestAsync(new LoginByCredentialsCommand(dto.UsernameOrEmail, dto.Password));
 
-        [HttpPost("login/magic-link")]
-        public async Task<IActionResult> PostLoginViaMagicLink([FromBody] LoginViaMagicLinkDto dto) =>
-            await HandleRequestAsync(new LoginViaMagicLinkCommand(dto.Email));
+        [HttpPost("email/login")]
+        public async Task<IActionResult> PostLoginByEmail([FromBody] LoginByEmailDto dto) =>
+            await HandleRequestAsync(new LoginByEmailCommand(dto.Email));
+
+        [HttpPost("token/login")]
+        public async Task<IActionResult> PostLoginByToken([FromQuery] string token) =>
+            await HandleRequestAsync(new LoginByTokenCommand(token));
     }
 }

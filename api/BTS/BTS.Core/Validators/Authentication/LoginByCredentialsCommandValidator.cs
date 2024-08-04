@@ -5,10 +5,10 @@ using FluentValidation;
 
 namespace BTS.Core.Validators.Authentication
 {
-    public class LoginCommandValidator : AbstractValidator<LoginCommand>
+    public class LoginByCredentialsCommandValidator : AbstractValidator<LoginByCredentialsCommand>
     {
         private readonly IUserRepository _repository;
-        public LoginCommandValidator(IUserRepository repository)
+        public LoginByCredentialsCommandValidator(IUserRepository repository)
         {
             _repository = repository;
 

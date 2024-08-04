@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BTS.Core.Validators.Authentication
 {
-    public class LoginViaMagicLinkCommandValidator : AbstractValidator<LoginViaMagicLinkCommand>
+    public class LoginByEmailCommandValidator : AbstractValidator<LoginByEmailCommand>
     {
-        public LoginViaMagicLinkCommandValidator()
+        public LoginByEmailCommandValidator()
         {
             RuleFor(property => property.Email)
                 .NotNull()

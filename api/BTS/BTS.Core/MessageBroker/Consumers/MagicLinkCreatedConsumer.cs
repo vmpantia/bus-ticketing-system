@@ -1,6 +1,8 @@
 ﻿using BTS.Core.MessageBroker.Events.Authentication;
 using BTS.Core.Services;
+using BTS.Domain.Constants;
 using BTS.Domain.Contractors.Repositories;
+using BTS.Domain.Exceptions;
 using BTS.Domain.Models.Entities;
 using MassTransit;
 using Microsoft.Extensions.Logging;
@@ -30,10 +32,10 @@ namespace BTS.Core.MessageBroker.Consumers
             {
                 if (!_accessTokenRepository.IsExist(data => data.Id == context.Message.Id &&
                                                             data.UserId == context.Message.UserId, out AccessToken accessToken))
-                    throw new Exception("Token not found in the database.");
+                    throw new NotFoundException(string.Format(ErrorMessage.ERROR_NOT_FOUND_FORMAT, "Token"));
 
                 if (!_userRepository.IsExist(data => data.Id == context.Message.UserId, out User user))
-                    throw new Exception("User not found in the database.");
+                    throw new NotFoundException(string.Format(ErrorMessage.ERROR_NOT_FOUND_FORMAT, nameof(User)));
 
                 await _emailService.SendMagicLinkEmail(accessToken, user, context.CancellationToken);
             }

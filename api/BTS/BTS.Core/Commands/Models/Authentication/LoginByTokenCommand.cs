@@ -3,5 +3,5 @@ using MediatR;
 
 namespace BTS.Core.Commands.Models.Authentication
 {
-    public sealed record LoginViaMagicLinkCommand(string Email) : IRequest<Result> { }
+    public sealed record LoginByTokenCommand(string Token) : IRequest<Result> { }
 }

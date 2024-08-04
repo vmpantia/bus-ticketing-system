@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using BTS.Domain.Contractors.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using BTS.Api.Extensions;
+using BTS.Domain.Constants;
+using BTS.Domain.Exceptions;
 
 namespace BTS.Api.Controllers
 {
@@ -24,7 +26,7 @@ namespace BTS.Api.Controllers
             get
             {
                 var token = HttpContext.GetBearerToken();
-                return _jwtProvider.GetValueByClaim(JwtRegisteredClaimNames.Email, token) ?? "System";
+                return _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_EMAIL, token) ?? "System";
             }
         }
 
@@ -48,6 +50,10 @@ namespace BTS.Api.Controllers
                     { IsSuccess: false } => BadRequest(result),
                     _ => Ok(result)
                 };
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(Result.Failure(CommonError.NotFound(ex)));
             }
             catch (Exception ex)
             {

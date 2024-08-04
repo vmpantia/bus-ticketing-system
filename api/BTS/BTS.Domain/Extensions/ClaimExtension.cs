@@ -1,4 +1,5 @@
 ﻿using BTS.Domain.Constants;
+using BTS.Domain.Models.Enums;
 using System.Security.Claims;
 
 namespace BTS.Domain.Extensions
@@ -26,6 +27,11 @@ namespace BTS.Domain.Extensions
         public static List<Claim> AddUserRole(this List<Claim> claims, bool isAdmin)
         {
             claims.Add(new Claim(Common.CLAIM_NAME_USER_ROLE, isAdmin ? Common.CLAIM_VALUE_ROLE_ADMIN : Common.CLAIM_VALUE_ROLE_USER));
+            return claims;
+        }
+        public static List<Claim> AddTokenType(this List<Claim> claims, AccessTokenType type)
+        {
+            claims.Add(new Claim(Common.CLAIM_NAME_TOKEN_TYPE, type.ToString()));
             return claims;
         }
     }

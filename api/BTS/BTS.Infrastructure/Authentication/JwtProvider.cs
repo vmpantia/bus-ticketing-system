@@ -10,12 +10,15 @@ namespace BTS.Infrastructure.Authentication
     public class JwtProvider : IJwtProvider
     {
         private readonly JwtSetting _setting;
-        public JwtProvider(JwtSetting setting) => _setting = setting;
+        private readonly JwtSecurityTokenHandler _tokenHandler;
+        public JwtProvider(JwtSetting setting)
+        {
+            _setting = setting;
+            _tokenHandler = new JwtSecurityTokenHandler();
+        }
 
         public string GenerateToken(User user, List<Claim> claims, DateTime? expirationDate = null)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-
             // Check if the claims is null or empty
             if (claims.IsNullOrEmpty()) 
                 throw new ArgumentNullException("Identity claims for access token cannot be NULL or empty.");
@@ -35,21 +38,24 @@ namespace BTS.Infrastructure.Authentication
                 signingCredentials: signingCredentials);
 
             // Generate token value
-            var accessToken = tokenHandler.WriteToken(securityToken);
+            var accessToken = _tokenHandler.WriteToken(securityToken);
 
             return accessToken;
         }
 
         public string? GetValueByClaim(string claimName, string token)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-
             // Decode the JWT token
-            var handler = new JwtSecurityTokenHandler();
-            var jsonToken = handler.ReadToken(token);
-            var securityToken = (JwtSecurityToken)handler.ReadToken(token);
+            var jsonToken = _tokenHandler.ReadToken(token);
+            var securityToken = (JwtSecurityToken)_tokenHandler.ReadToken(token);
 
             return securityToken.Claims.FirstOrDefault(c => c.Type.Equals(claimName))?.Value;
+        }
+
+        public async Task<bool> IsTokenValid(string token)
+        {
+            var result =  await _tokenHandler.ValidateTokenAsync(token, _setting.TokenValidationParameters);
+            return result.IsValid;
         }
     }
 }
