@@ -1,8 +1,7 @@
-﻿using BTS.Core.Commands.Models.User;
+﻿using BTS.Core.Commands.Models.Auth;
 using BTS.Domain.Contractors.Authentication;
-using BTS.Domain.Models.Dtos.User;
+using BTS.Domain.Models.Dtos.Auth;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BTS.Api.Controllers
@@ -14,8 +13,7 @@ namespace BTS.Api.Controllers
         public AuthController(IMediator mediator, IJwtProvider jwtProvider) : base(mediator, jwtProvider) { }
 
         [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> PostLoginUser([FromBody] LoginUserDto dto) =>
-            await HandleRequestAsync(new LoginUserCommand(dto.UsernameOrEmail, dto.Password));
+        public async Task<IActionResult> PostLoginUser([FromBody] LoginDto dto) =>
+            await HandleRequestAsync(new LoginCommand(dto.UsernameOrEmail, dto.Password));
     }
 }

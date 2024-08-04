@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using BTS.Core.Commands.Models.User;
 using BTS.Domain.Contractors.Repositories;
-using BTS.Domain.Contractors.Services;
 using BTS.Domain.Models.Dtos.User;
 using BTS.Domain.Models.Entities;
 using BTS.Domain.Results;
@@ -10,30 +9,15 @@ using MediatR;
 namespace BTS.Core.Commands.Handlers
 {
     public class UserCommandHandler :
-        IRequestHandler<LoginUserCommand, Result>,
         IRequestHandler<CreateUserCommand, Result>
     {
         private readonly IUserRepository _userRepository;
-        private readonly IAuthenticationService _authenticationService;
         private readonly IMapper _mapper;
-        public UserCommandHandler(IUserRepository userRepository, IAuthenticationService authenticationService, IMapper mapper)
+        public UserCommandHandler(IUserRepository userRepository, IMapper mapper)
         {
             _userRepository = userRepository;
-            _authenticationService = authenticationService;
             _mapper = mapper;
         }
-
-        public async Task<Result> Handle(LoginUserCommand request, CancellationToken cancellationToken) =>
-            await Task.Run(() =>
-            {    
-                var token = _authenticationService.Authenticate(request.UsernameOrEmail, request.Password, out User user);
-                return Result.Success(new
-                {
-                    Email = user.Email,
-                    Name = $"{user.FirstName} {user.LastName}",
-                    Token = token
-                });
-            });
 
         public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
         {

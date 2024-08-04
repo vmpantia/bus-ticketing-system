@@ -1,6 +1,6 @@
-﻿namespace BTS.Domain.Models.Dtos.User
+﻿namespace BTS.Domain.Models.Dtos.Auth
 {
-    public class LoginUserDto
+    public class LoginDto
     {
         public required string UsernameOrEmail { get; set; }
         public required string Password { get; set; }
