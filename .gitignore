@@ -365,3 +365,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# Remove Docker Containers
+api/BTS/.containers

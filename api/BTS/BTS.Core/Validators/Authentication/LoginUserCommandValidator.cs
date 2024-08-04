@@ -1,8 +1,8 @@
-﻿using BTS.Core.Commands.Models.Auth;
+﻿using BTS.Core.Commands.Models.Authentication;
 using BTS.Domain.Contractors.Repositories;
 using FluentValidation;
 
-namespace BTS.Core.Validators.Auth
+namespace BTS.Core.Validators.Authentication
 {
     public class LoginUserCommandValidator : AbstractValidator<LoginCommand>
     {

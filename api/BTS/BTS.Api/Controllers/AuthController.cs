@@ -1,4 +1,4 @@
-﻿using BTS.Core.Commands.Models.Auth;
+﻿using BTS.Core.Commands.Models.Authentication;
 using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Models.Dtos.Auth;
 using MediatR;

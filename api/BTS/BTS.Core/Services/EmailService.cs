@@ -7,7 +7,7 @@ namespace BTS.Core.Services
         private readonly IEmailProvider _emailProvider;
         public EmailService(IEmailProvider emailProvider) => _emailProvider = emailProvider;
 
-        public async Task SendEmail(CancellationToken token)
+        public async Task SendAsync(CancellationToken token)
         {
             await _emailProvider.SendAsync(new Domain.Models.EmailContent
             {

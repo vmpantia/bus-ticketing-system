@@ -19,3 +19,11 @@ services:
       - SA_PASSWORD=P@ssw0rd
     ports:
       - 1443:1443
+
+  bts.mq:
+    image: rabbitmq:management
+    container_name: bts.mq
+    hostname: bts-mq
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: P@ssw0rd
