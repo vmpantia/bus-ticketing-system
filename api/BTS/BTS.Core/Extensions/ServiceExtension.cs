@@ -1,6 +1,6 @@
 ﻿using BTS.Core.Behaviors;
 using BTS.Core.Services;
-using BTS.Domain.Contractors.Services;
+using BTS.Domain.Contractors.Authentication;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
@@ -28,10 +28,11 @@ namespace BTS.Core.Extensions
             {
                 config.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
                 config.AddOpenBehavior(typeof(ValidationPipelineBehavior<,>));
-                config.AddOpenBehavior(typeof(UnitOfWorkPipelineBehavior<,>));
+                config.AddOpenBehavior(typeof(TransactionPipelineBehavior<,>));
             });
 
         private static void AddServices(this IServiceCollection services) =>
-            services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IAuthenticationService, AuthenticationService>()
+                    .AddScoped<IEmailService, EmailService>();
     }
 }

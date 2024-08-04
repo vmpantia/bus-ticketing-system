@@ -41,16 +41,21 @@ namespace BTS.Infrastructure.Databases.Repositories.Common
         public async Task<TEntity> CreateAsync(TEntity entity, CancellationToken token)
         {
             await _table.AddAsync(entity, token);
+            await _context.SaveChangesAsync();
             return entity;
         }
 
         public async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken token)
         {
-            await Task.Run(() => _table.Update(entity), token);
+            _table.Update(entity);
+            await _context.SaveChangesAsync(token);
             return entity;
         }
 
-        public async Task DeleteAsync(TEntity entity, CancellationToken token) =>
-            await Task.Run(() => _table.Remove(entity), token);
+        public async Task DeleteAsync(TEntity entity, CancellationToken token)
+        {
+            _table.Remove(entity);
+            await _context.SaveChangesAsync(token);
+        }
     }
 }

@@ -1,11 +1,11 @@
 ﻿using BTS.Domain.Constants;
 using BTS.Domain.Contractors.Authentication;
+using BTS.Domain.Contractors.Email;
 using BTS.Domain.Contractors.Repositories;
-using BTS.Domain.Contractors.Repositories.Common;
 using BTS.Infrastructure.Authentication;
 using BTS.Infrastructure.Databases.Contexts;
 using BTS.Infrastructure.Databases.Repositories;
-using BTS.Infrastructure.Databases.Repositories.Common;
+using BTS.Infrastructure.Email;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -21,21 +21,21 @@ namespace BTS.Infrastructure.Extensions
             services.AddRBACAuthorization();
             services.AddDbContext(configuration);
             services.AddRepositories();
+            services.AddEmail(configuration);
         }
 
         private static void AddDbContext(this IServiceCollection services, IConfiguration configuration) =>
             services.AddDbContext<BTSDbContext>(context => context.UseSqlServer(configuration.GetConnectionString("MigrationDb")));
 
         private static void AddRepositories(this IServiceCollection services) =>
-            services.AddScoped<IUnitOfWork, UnitOfWork>()
-                    .AddScoped<IDriverRepository, DriverRepository>()
+            services.AddScoped<IDriverRepository, DriverRepository>()
                     .AddScoped<IBusRepository, BusRepository>()
                     .AddScoped<IRouteRepository, RouteRepository>()
                     .AddScoped<IUserRepository, UserRepository>();
 
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
-            // Initialize Jwt Configuration6
+            // Initialize Jwt Configuration
             var jwtSetting = JwtSetting.FromConfiguration(configuration);
             services.AddSingleton(jwtSetting);
             services.AddScoped<IJwtProvider, JwtProvider>();
@@ -59,6 +59,14 @@ namespace BTS.Infrastructure.Extensions
                     policy.RequireClaim(Common.CLAIM_NAME_USER_ROLE, Common.CLAIM_VALUE_ROLE_USER);
                 });
             });
+        }
+
+        public static void AddEmail(this IServiceCollection services, IConfiguration configuration)
+        {
+            // Initialize Email Configuration
+            var emailSetting = EmailSetting.FromConfiguration(configuration);
+            services.AddSingleton(emailSetting);
+            services.AddScoped<IEmailProvider, EmailProvider>();
         }
     }
 }

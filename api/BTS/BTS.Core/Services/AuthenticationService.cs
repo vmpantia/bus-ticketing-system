@@ -1,6 +1,5 @@
 ﻿using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Contractors.Repositories;
-using BTS.Domain.Contractors.Services;
 using BTS.Domain.Models.Entities;
 
 namespace BTS.Core.Services
