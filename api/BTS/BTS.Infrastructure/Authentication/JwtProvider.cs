@@ -1,5 +1,4 @@
-﻿using BTS.Domain.Constants;
-using BTS.Domain.Contractors.Authentication;
+﻿using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Extensions;
 using BTS.Domain.Models.Entities;
 using Microsoft.IdentityModel.Tokens;
@@ -13,17 +12,13 @@ namespace BTS.Infrastructure.Authentication
         private readonly JwtSetting _setting;
         public JwtProvider(JwtSetting setting) => _setting = setting;
 
-        public string Generate(User user)
+        public string GenerateToken(User user, List<Claim> claims, DateTime? expirationDate = null)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            // Create an instance of claims for specific user
-            var claims = new Claim[] {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Name, $"{user.FirstName} {user.LastName}"),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(Common.CLAIM_NAME_USER_ROLE, user.IsAdmin ? Common.CLAIM_VALUE_ROLE_ADMIN : Common.CLAIM_VALUE_ROLE_USER)
-            };
+            // Check if the claims is null or empty
+            if (claims.IsNullOrEmpty()) 
+                throw new ArgumentNullException("Identity claims for access token cannot be NULL or empty.");
 
             // Create an instance of signing credentials user for instace of jwt security token
             var signingCredentials = new SigningCredentials(
@@ -35,7 +30,8 @@ namespace BTS.Infrastructure.Authentication
                 issuer: _setting.Issuer,
                 audience: _setting.Audience,
                 claims: claims,
-                expires: DateTimeExtension.GetCurrentDateTimeOffsetUtc().AddHours(1).DateTime,
+                expires: expirationDate ?? DateTimeExtension.GetCurrentDateTimeUtc()
+                                                            .AddHours(1),
                 signingCredentials: signingCredentials);
 
             // Generate token value

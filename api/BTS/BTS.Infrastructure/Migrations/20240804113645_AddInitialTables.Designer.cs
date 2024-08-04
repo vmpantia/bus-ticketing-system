@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BTS.Infrastructure.Migrations
 {
     [DbContext(typeof(BTSDbContext))]
-    [Migration("20240803001602_AddInitialTables")]
+    [Migration("20240804113645_AddInitialTables")]
     partial class AddInitialTables
     {
         /// <inheritdoc />
@@ -24,6 +24,51 @@ namespace BTS.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("BTS.Domain.Models.Entities.AccessToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<DateTimeOffset?>("UpdatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTimeOffset?>("UsedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("UsedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Token", "IsUsed");
+
+                    b.ToTable("AccessTokens");
+                });
 
             modelBuilder.Entity("BTS.Domain.Models.Entities.Bus", b =>
                 {
@@ -320,8 +365,8 @@ namespace BTS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("e741aacc-e0b1-48d8-a95d-edc36c896327"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2024, 8, 3, 0, 16, 1, 777, DateTimeKind.Unspecified).AddTicks(8525), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id = new Guid("90c0d57c-200d-40be-ab82-f2c6b7cad76b"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2024, 8, 4, 11, 36, 44, 553, DateTimeKind.Unspecified).AddTicks(3904), new TimeSpan(0, 0, 0, 0, 0)),
                             CreatedBy = "System",
                             Email = "test_admin@test.com",
                             FirstName = "Admin",

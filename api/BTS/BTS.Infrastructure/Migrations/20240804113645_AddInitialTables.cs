@@ -12,6 +12,27 @@ namespace BTS.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "AccessTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    UsedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    UsedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccessTokens", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Drivers",
                 columns: table => new
                 {
@@ -155,7 +176,12 @@ namespace BTS.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Email", "FirstName", "IsAdmin", "IsEmailConfirmed", "LastName", "MiddleName", "Password", "Status", "UpdatedAt", "UpdatedBy", "Username" },
-                values: new object[] { new Guid("e741aacc-e0b1-48d8-a95d-edc36c896327"), new DateTimeOffset(new DateTime(2024, 8, 3, 0, 16, 1, 777, DateTimeKind.Unspecified).AddTicks(8525), new TimeSpan(0, 0, 0, 0, 0)), "System", null, null, "test_admin@test.com", "Admin", true, true, "Admin", null, "P@ssw0rd", 0, null, null, "admin" });
+                values: new object[] { new Guid("90c0d57c-200d-40be-ab82-f2c6b7cad76b"), new DateTimeOffset(new DateTime(2024, 8, 4, 11, 36, 44, 553, DateTimeKind.Unspecified).AddTicks(3904), new TimeSpan(0, 0, 0, 0, 0)), "System", null, null, "test_admin@test.com", "Admin", true, true, "Admin", null, "P@ssw0rd", 0, null, null, "admin" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccessTokens_UserId_Token_IsUsed",
+                table: "AccessTokens",
+                columns: new[] { "UserId", "Token", "IsUsed" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Buses_DriverId",
@@ -190,6 +216,9 @@ namespace BTS.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccessTokens");
+
             migrationBuilder.DropTable(
                 name: "Buses");
 

@@ -1,4 +1,4 @@
-﻿namespace BTS.Domain.Models.Dtos.Auth
+﻿namespace BTS.Domain.Models.Dtos.Authentication
 {
     public class LoginDto
     {

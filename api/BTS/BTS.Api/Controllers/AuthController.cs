@@ -1,6 +1,6 @@
 ﻿using BTS.Core.Commands.Models.Authentication;
 using BTS.Domain.Contractors.Authentication;
-using BTS.Domain.Models.Dtos.Auth;
+using BTS.Domain.Models.Dtos.Authentication;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,5 +15,9 @@ namespace BTS.Api.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> PostLoginUser([FromBody] LoginDto dto) =>
             await HandleRequestAsync(new LoginCommand(dto.UsernameOrEmail, dto.Password));
+
+        [HttpPost("login/magic-link")]
+        public async Task<IActionResult> PostLoginViaMagicLink([FromBody] LoginViaMagicLinkDto dto) =>
+            await HandleRequestAsync(new LoginViaMagicLinkCommand(dto.Email));
     }
 }

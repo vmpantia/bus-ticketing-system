@@ -31,7 +31,8 @@ namespace BTS.Infrastructure.Extensions
             services.AddScoped<IDriverRepository, DriverRepository>()
                     .AddScoped<IBusRepository, BusRepository>()
                     .AddScoped<IRouteRepository, RouteRepository>()
-                    .AddScoped<IUserRepository, UserRepository>();
+                    .AddScoped<IUserRepository, UserRepository>()
+                    .AddScoped<IAccessTokenRepository, AccessTokenRepository>();
 
         public static void AddJwtAuthentication(this IServiceCollection services, IConfiguration configuration)
         {

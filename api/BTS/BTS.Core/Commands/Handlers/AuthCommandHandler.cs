@@ -4,6 +4,7 @@ using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Extensions;
 using BTS.Domain.Models.Entities;
+using BTS.Domain.Models.Enums;
 using BTS.Domain.Results;
 using MassTransit;
 using MediatR;
@@ -11,38 +12,60 @@ using MediatR;
 namespace BTS.Core.Commands.Handlers
 {
     public class AuthCommandHandler :
-        IRequestHandler<LoginCommand, Result>
+        IRequestHandler<LoginCommand, Result>,
+        IRequestHandler<LoginViaMagicLinkCommand, Result>
     {
         private readonly IUserRepository _userRepository;
+        private readonly IAccessTokenRepository _accessTokenRepository;
         private readonly IAuthenticationService _authenticationService;
         private readonly IPublishEndpoint _publishEndpoint;
         public AuthCommandHandler(IUserRepository userRepository,
+                                  IAccessTokenRepository accessTokenRepository,
                                   IAuthenticationService authenticationService,
                                   IPublishEndpoint publishEndpoint)
         {
             _userRepository = userRepository;
+            _accessTokenRepository = accessTokenRepository;
             _authenticationService = authenticationService;
             _publishEndpoint = publishEndpoint;
         }
 
-        public async Task<Result> Handle(LoginCommand request, CancellationToken cancellationToken)
-        {
-            var token = _authenticationService.Authenticate(request.UsernameOrEmail, request.Password, out User user);
+        public async Task<Result> Handle(LoginCommand request, CancellationToken cancellationToken) =>
+            await Task.Run(() =>
+            {
+                var token = _authenticationService.Authenticate(request.UsernameOrEmail, request.Password, out User user);
+                return Result.Success(new
+                {
+                    Email = user.Email,
+                    Name = $"{user.FirstName} {user.LastName}",
+                    Token = token
+                });
+            });
 
-            // Send magic link created event to a consumer
-            await _publishEndpoint.Publish(new MagicLinkCreatedEvent
+        public async Task<Result> Handle(LoginViaMagicLinkCommand request, CancellationToken cancellationToken)
+        {
+            // Generate token used for magic link
+            var token = _authenticationService.Authenticate(request.Email, out User user);
+
+            // Create a record for the generated token
+            var result = await _accessTokenRepository.CreateAsync(new AccessToken
             {
                 Id = Guid.NewGuid(),
-                UserId = Guid.NewGuid(),
-                CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc()
+                UserId = user.Id,
+                Token = token,
+                Type = AccessTokenType.MagicLink,
+                CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc(),
+                CreatedBy = request.Email
             }, cancellationToken);
 
-            return Result.Success(new
+            // Send a event message to message broker
+            await _publishEndpoint.Publish(new MagicLinkCreatedEvent
             {
-                Email = user.Email,
-                Name = $"{user.FirstName} {user.LastName}",
-                Token = token
-            });
+                Id = result.Id,
+                UserId = result.UserId,
+            }, cancellationToken);
+
+            return Result.Success("Magic link created, Kindly check on your email.");
         }
     }
 }

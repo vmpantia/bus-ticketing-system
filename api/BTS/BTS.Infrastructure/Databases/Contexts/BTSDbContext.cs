@@ -34,6 +34,7 @@ namespace BTS.Infrastructure.Databases.Contexts
         public DbSet<Route> Routes { get; set; }
         public DbSet<Terminal> Terminals { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<AccessToken> AccessTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -104,6 +105,11 @@ namespace BTS.Infrastructure.Databases.Contexts
                 u.HasIndex(u => new { u.Username, u.Email, u.Password, u.IsEmailConfirmed, u.IsAdmin });
 
                 u.HasData(_initialUsers);
+            });
+
+            modelBuilder.Entity<AccessToken>(a =>
+            {
+                a.HasIndex(a => new { a.UserId, a.Token, a.IsUsed });
             });
         }
     }

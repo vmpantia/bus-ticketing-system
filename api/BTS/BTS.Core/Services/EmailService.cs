@@ -1,4 +1,6 @@
 ﻿using BTS.Domain.Contractors.Email;
+using BTS.Domain.Models;
+using BTS.Domain.Models.Entities;
 
 namespace BTS.Core.Services
 {
@@ -7,15 +9,16 @@ namespace BTS.Core.Services
         private readonly IEmailProvider _emailProvider;
         public EmailService(IEmailProvider emailProvider) => _emailProvider = emailProvider;
 
-        public async Task SendAsync(CancellationToken token)
+        public async Task SendMagicLinkEmail(AccessToken accessToken, User user, CancellationToken cancellationToken)
         {
-            await _emailProvider.SendAsync(new Domain.Models.EmailContent
+            var content = new EmailContent
             {
-                Subject = "Test",
-                From = new List<string> { "vincent.m.pantia@gmail.com" },
-                To = new List<string> { "vincent.m.pantia@gmail.com" },
-                Body = "Test Email"
-            }, token);
+                Subject = "Login to Bus Terminal System",
+                From = new List<string> { "bts-no-reply@bts.com.ph" },
+                To = new List<string> { user.Email },
+                Body = $"Hi Mrs. {user.LastName}, Welcome to Bus Termminal System if you wish to use our system kindly click the login button. <a href='https:/localhost:3000/login?token={accessToken.Token}' target='_blank'>Login</a>"
+            };
+            await _emailProvider.SendAsync(content, cancellationToken);
         }
     }
 }
