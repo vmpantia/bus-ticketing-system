@@ -19,7 +19,8 @@ namespace BTS.Core.Validators.Driver
                                                                 cancellation);
                     return !isSame;
                 })
-                .WithMessage("Current status is same with the new status.");
+                .WithName("New Status")
+                .WithMessage("'{PropertyName}' is same in the current driver status.");
         }
     }
 }

@@ -32,7 +32,8 @@ namespace BTS.Core.Validators.Bus.Common
                                                                        cancellation);
                     return isExist;
                 })
-                .WithMessage((property) => $"Driver with an Id of {property.DriverId} is not found in the database, Only active and existing driver can be link to a bus.");
+                .WithName("Driver Id")
+                .WithMessage((property) => "'{PropertyName}' " + $"{property.DriverId} is not found in the database, Only active and existing driver can be link to a bus.");
         
             RuleFor(property => property.RouteId)
                 .MustAsync(async (routeId, cancellation) =>
@@ -46,43 +47,34 @@ namespace BTS.Core.Validators.Bus.Common
                                                                       cancellation);
                     return isExist;
                 })
-                .WithMessage((property) => $"Route with an Id of {property.RouteId} is not found in the database, Only active and existing route can be link to a bus.");
+                .WithMessage((property) => "'{PropertyName}' " + $"{property.DriverId} is not found in the database, Only active and existing route can be link to a bus.");
 
             RuleFor(property => property.BusNo)
                 .NotNull()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_NULL_VALUE_FORMAT, "Bus number"))
                 .NotEmpty()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_EMPTY_VALUE_FORMAT, "Bus number"));
+                .WithName("Bus Number");
 
             RuleFor(property => property.PlateNo)
                 .NotNull()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_NULL_VALUE_FORMAT, "Plate number"))
                 .NotEmpty()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_EMPTY_VALUE_FORMAT, "Plate number"))
+                .WithName("Plate Number")
                 .MustAsync(async (command, plateNo, cancellation) =>
                 {
                     var isUnique = await IsPlateNumberUniqueAsync(command, plateNo, cancellation);
                     return isUnique;
-                })
-                .WithMessage(string.Format(ErrorMessage.ERROR_UNIQUE_VALUE_FORMAT, "Plate number"));
+                }).WithMessage(ErrorMessage.ERROR_UNIQUE_VALUE_MESSAGE);
 
             RuleFor(property => property.Make)
                 .NotNull()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_NULL_VALUE_FORMAT, "Make"))
-                .NotEmpty()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_EMPTY_VALUE_FORMAT, "Make"));
+                .NotEmpty();
 
             RuleFor(property => property.Model)
                 .NotNull()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_NULL_VALUE_FORMAT, "Model"))
-                .NotEmpty()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_EMPTY_VALUE_FORMAT, "Model"));
+                .NotEmpty();
 
             RuleFor(property => property.Year)
                 .NotNull()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_NULL_VALUE_FORMAT, "Year"))
-                .NotEmpty()
-                    .WithMessage(string.Format(ErrorMessage.ERROR_EMPTY_VALUE_FORMAT, "Year"));
+                .NotEmpty();
         }
 
         public abstract Task<bool> IsPlateNumberUniqueAsync(TCommand command, string plateNo, CancellationToken token);

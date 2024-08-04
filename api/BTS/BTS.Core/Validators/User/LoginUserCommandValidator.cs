@@ -14,13 +14,14 @@ namespace BTS.Core.Validators.User
             RuleFor(property => property.UsernameOrEmail)
                 .NotNull()
                 .NotEmpty()
+                .WithName("Username or Email")
                 .MustAsync(async (command, userNameOrEmail, cancellation) =>
                 {
                     var isExist = await _repository.IsExistAsync(data => data.Username.Equals(userNameOrEmail) ||
                                                                          data.Email.Equals(userNameOrEmail),
                                                                  cancellation);
                     return isExist;
-                }).WithMessage("User not found in the database.");
+                }).WithMessage("'{PropertyName}' is not found in the database.");
 
             RuleFor(property => property.Password)
                 .NotNull()
@@ -33,7 +34,7 @@ namespace BTS.Core.Validators.User
                                                                          data.Password.Equals(password),
                                                                  cancellation);
                     return isExist;
-                }).WithMessage("Invalid user credentials.");
+                }).WithMessage("'{PropertyName}' is incorrect or not matched in the database.");
         }
     }
 }
