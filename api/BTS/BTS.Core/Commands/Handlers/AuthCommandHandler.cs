@@ -48,25 +48,29 @@ namespace BTS.Core.Commands.Handlers
             // Generate token used for magic link
             var token = _authenticationService.AuthenticateByEmail(request.Email, out User user);
 
-            // Create a record for the generated token
-            var result = await _accessTokenRepository.CreateAsync(new AccessToken
+            // Check if the generated token is NULL or empty
+            if(!string.IsNullOrEmpty(token))
             {
-                Id = Guid.NewGuid(),
-                UserId = user.Id,
-                Token = token,
-                Type = AccessTokenType.MagicLink,
-                CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc(),
-                CreatedBy = request.Email
-            }, cancellationToken);
+                // Create a record for the generated token
+                var result = await _accessTokenRepository.CreateAsync(new AccessToken
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    Token = token,
+                    Type = AccessTokenType.MagicLink,
+                    CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc(),
+                    CreatedBy = request.Email
+                }, cancellationToken);
 
-            // Send a event message to message broker
-            await _publishEndpoint.Publish(new MagicLinkCreatedEvent
-            {
-                Id = result.Id,
-                UserId = result.UserId,
-            }, cancellationToken);
+                // Send a event message to message broker
+                await _publishEndpoint.Publish(new MagicLinkCreatedEvent
+                {
+                    Id = result.Id,
+                    UserId = result.UserId,
+                }, cancellationToken);
+            }
 
-            return Result.Success("Magic link created, Kindly check on your email.");
+            return Result.Success();
         }
 
         public async Task<Result> Handle(LoginByTokenCommand request, CancellationToken cancellationToken)

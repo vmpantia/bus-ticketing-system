@@ -13,7 +13,6 @@ namespace BTS.Core.Validators.Authentication
         private readonly IUserRepository _userRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
 
-        private string? _userId;
         private string? _userEmail;
         private string? _tokenType;
         public LoginByTokenCommandValidator(IJwtProvider jwtProvider, 
@@ -46,11 +45,6 @@ namespace BTS.Core.Validators.Authentication
                 }).WithMessage("'{PropertyName}' is already used by the user.")
                 .Must((token) =>
                 {
-                    _userId = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_ID, token);
-                    return Guid.TryParse(_userId, out Guid id);
-                }).WithMessage("Id from the {PropertyName} is not a valid User Id.")
-                .Must((token) =>
-                {
                     _userEmail = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_EMAIL, token);
                     return !string.IsNullOrEmpty(_userEmail);
                 }).WithMessage("Email from the {PropertyName} must have value.")
@@ -61,16 +55,11 @@ namespace BTS.Core.Validators.Authentication
                 }).WithMessage("Type from the {PropertyName} must have value.")
                 .MustAsync(async (command, token, cancellation) =>
                 {
-                    if(Guid.TryParse(_userId, out Guid id))
-                    {
-                        // Check if the user exist in the database
-                        var isExist = await _userRepository.IsExistAsync(data => data.Id == id &&
-                                                                                 data.Email.Equals(_userEmail) &&
-                                                                                 data.Status == CommonStatus.Active,
-                                                                         cancellation);
-                        return isExist;
-                    }
-                    return false;
+                    // Check if the user exist in the database
+                    var isExist = await _userRepository.IsExistAsync(data => data.Email.Equals(_userEmail) &&
+                                                                             data.Status == CommonStatus.Active,
+                                                                        cancellation);
+                    return isExist;
                 }).WithMessage("Id and Email of user from the {PropertyName} is not found in the database.");
         }
     }

@@ -1,7 +1,6 @@
 ﻿using BTS.Domain.Constants;
 using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Contractors.Repositories;
-using BTS.Domain.Exceptions;
 using BTS.Domain.Extensions;
 using BTS.Domain.Models.Entities;
 using BTS.Domain.Models.Enums;
@@ -54,15 +53,15 @@ namespace BTS.Core.Services
         /// <param name="email"></param>
         /// <param name="user"></param>
         /// <returns>Access Token</returns>
-        public string AuthenticateByEmail(string email, out User user)
+        public string? AuthenticateByEmail(string email, out User user)
         {
-            // Get user based on the email provided
-            user = _userRepository.GetOne(data => data.Email.Equals(email) &&
-                                                  data.Status == CommonStatus.Active);
+            // Check if the email exist on the database
+            if (!_userRepository.IsExist(data => data.Email.Equals(email) &&
+                                                 data.Status == CommonStatus.Active, out user))
+                return null;
 
             // Create user claims use for generating access token
             var claims = new List<Claim>()
-                  .AddUserId(user.Id)
                   .AddUserEmail(user.Email)
                   .AddTokenType(AccessTokenType.MagicLink);
 
@@ -82,13 +81,11 @@ namespace BTS.Core.Services
         public string AuthenticateByToken(string token, out User user)
         {
             // Get necessary values from the token
-            var userId = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_ID, token);
             var userEmail = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_EMAIL, token);
             var tokenType = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_TOKEN_TYPE, token);
 
             // Get user based on the token provided
-            user = _userRepository.GetOne(data => data.Id == Guid.Parse(userId!) &&
-                                                  data.Email.Equals(userEmail) &&
+            user = _userRepository.GetOne(data => data.Email.Equals(userEmail) &&
                                                   data.Status == CommonStatus.Active);
 
             // Create user claims use for generating access token
