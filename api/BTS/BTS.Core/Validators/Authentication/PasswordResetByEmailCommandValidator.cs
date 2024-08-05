@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace BTS.Core.Validators.Authentication
 {
-    public class LoginByEmailCommandValidator : AbstractValidator<LoginByEmailCommand>
+    public class PasswordResetByEmailCommandValidator : AbstractValidator<PasswordResetByEmailCommand>
     {
-        public LoginByEmailCommandValidator()
+        public PasswordResetByEmailCommandValidator()
         {
             RuleFor(property => property.Email)
                 .NotNull()

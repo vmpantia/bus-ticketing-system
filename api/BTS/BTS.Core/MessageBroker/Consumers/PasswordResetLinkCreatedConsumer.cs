@@ -10,16 +10,16 @@ using Microsoft.Extensions.Logging;
 
 namespace BTS.Core.MessageBroker.Consumers
 {
-    public class MagicLinkCreatedConsumer : IConsumer<MagicLinkCreatedEvent>
+    public class PasswordResetLinkCreatedConsumer : IConsumer<PasswordResetLinkCreatedEvent>
     {
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
-        private readonly ILogger<MagicLinkCreatedConsumer> _logger;
-        public MagicLinkCreatedConsumer(IEmailService emailService,
-                                        IUserRepository userRepository,
-                                        IAccessTokenRepository accessTokenRepository,
-                                         ILogger<MagicLinkCreatedConsumer> logger)
+        private readonly ILogger<PasswordResetLinkCreatedConsumer> _logger;
+        public PasswordResetLinkCreatedConsumer(IEmailService emailService,
+                                                IUserRepository userRepository,
+                                                IAccessTokenRepository accessTokenRepository,
+                                                ILogger<PasswordResetLinkCreatedConsumer> logger)
         {
             _emailService = emailService;
             _userRepository = userRepository;
@@ -27,23 +27,23 @@ namespace BTS.Core.MessageBroker.Consumers
             _logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<MagicLinkCreatedEvent> context)
+        public async Task Consume(ConsumeContext<PasswordResetLinkCreatedEvent> context)
         {
             try
             {
                 if (!_accessTokenRepository.IsExist(data => data.Id == context.Message.Id &&
                                                             data.UserId == context.Message.UserId &&
-                                                            data.Type == AccessTokenType.MagicLink , out AccessToken accessToken))
+                                                            data.Type == AccessTokenType.PasswordResetLink , out AccessToken accessToken))
                     throw new NotFoundException(string.Format(ErrorMessage.ERROR_NOT_FOUND_FORMAT, "Token"));
 
                 if (!_userRepository.IsExist(data => data.Id == context.Message.UserId, out User user))
                     throw new NotFoundException(string.Format(ErrorMessage.ERROR_NOT_FOUND_FORMAT, nameof(User)));
 
-                await _emailService.SendMagicLinkEmail(accessToken, user, context.CancellationToken);
+                await _emailService.SendPasswordResetEmail(accessToken, user, context.CancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to send magic link from {nameof(MagicLinkCreatedConsumer)} due to error {ex.Message}");
+                _logger.LogError($"Failed to send password reset link from {nameof(PasswordResetLinkCreatedConsumer)} due to error {ex.Message}");
                 return;
             }
         }

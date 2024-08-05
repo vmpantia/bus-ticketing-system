@@ -16,12 +16,16 @@ namespace BTS.Api.Controllers
         public async Task<IActionResult> PostLoginByCredentials([FromBody] LoginByCredentialsDto dto) =>
             await HandleRequestAsync(new LoginByCredentialsCommand(dto.UsernameOrEmail, dto.Password));
 
-        [HttpPost("email/login")]
-        public async Task<IActionResult> PostLoginByEmail([FromBody] LoginByEmailDto dto) =>
-            await HandleRequestAsync(new LoginByEmailCommand(dto.Email));
+        [HttpPost("login/email")]
+        public async Task<IActionResult> PostLoginByEmail(string email) =>
+            await HandleRequestAsync(new LoginByEmailCommand(email));
 
-        [HttpPost("token/login")]
+        [HttpPost("login/token")]
         public async Task<IActionResult> PostLoginByToken([FromQuery] string token) =>
             await HandleRequestAsync(new LoginByTokenCommand(token));
+
+        [HttpPost("password/reset")]
+        public async Task<IActionResult> PostPasswordResetByEmail(string email) =>
+            await HandleRequestAsync(new PasswordResetByEmailCommand(email));
     }
 }

@@ -53,7 +53,7 @@ namespace BTS.Core.Services
         /// <param name="email"></param>
         /// <param name="user"></param>
         /// <returns>Access Token</returns>
-        public string? AuthenticateByEmail(string email, out User user)
+        public string? AuthenticateByEmail(string email, AccessTokenType tokenType, out User user)
         {
             // Check if the email exist on the database
             if (!_userRepository.IsExist(data => data.Email.Equals(email) &&
@@ -63,7 +63,7 @@ namespace BTS.Core.Services
             // Create user claims use for generating access token
             var claims = new List<Claim>()
                   .AddUserEmail(user.Email)
-                  .AddTokenType(AccessTokenType.MagicLink);
+                  .AddTokenType(tokenType);
 
             // Generate access token for user
             var accessToken = _jwtProvider.GenerateToken(user, claims, DateTimeExtension.GetCurrentDateTimeUtc()

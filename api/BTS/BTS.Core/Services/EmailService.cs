@@ -20,5 +20,17 @@ namespace BTS.Core.Services
             };
             await _emailProvider.SendAsync(content, cancellationToken);
         }
+
+        public async Task SendPasswordResetEmail(AccessToken accessToken, User user, CancellationToken cancellationToken)
+        {
+            var content = new EmailContent
+            {
+                Subject = "Bus Terminal System Password Reset",
+                From = new List<string> { "bts-no-reply@bts.com.ph" },
+                To = new List<string> { user.Email },
+                Body = $"Hi Mrs. {user.LastName}, You may click the reset button to redirect you on a password reset page <a href='https:/localhost:3000/login?token={accessToken.Token}' target='_blank'>Reset</a>"
+            };
+            await _emailProvider.SendAsync(content, cancellationToken);
+        }
     }
 }

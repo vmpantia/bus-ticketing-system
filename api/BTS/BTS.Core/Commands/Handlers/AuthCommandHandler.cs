@@ -13,8 +13,9 @@ namespace BTS.Core.Commands.Handlers
 {
     public class AuthCommandHandler :
         IRequestHandler<LoginByCredentialsCommand, Result>,
+        IRequestHandler<LoginByTokenCommand, Result>,
         IRequestHandler<LoginByEmailCommand, Result>,
-        IRequestHandler<LoginByTokenCommand, Result>
+        IRequestHandler<PasswordResetByEmailCommand, Result>
     {
         private readonly IUserRepository _userRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
@@ -43,10 +44,31 @@ namespace BTS.Core.Commands.Handlers
                 });
             });
 
+        public async Task<Result> Handle(LoginByTokenCommand request, CancellationToken cancellationToken)
+        {
+            // Generate new token from the token provided
+            var newToken = _authenticationService.AuthenticateByToken(request.Token, out User user);
+
+            // Update magic link token to used
+            var magicLinkToken = _accessTokenRepository.GetOne(data => data.Token.Equals(request.Token) &&
+                                                                       data.Type == AccessTokenType.MagicLink);
+
+            // Update necessary information
+            magicLinkToken.SetTokenToUsed(request.Requestor, DateTimeExtension.GetCurrentDateTimeOffsetUtc());
+            await _accessTokenRepository.UpdateAsync(magicLinkToken, cancellationToken);
+
+            return Result.Success(new
+            {
+                Email = user.Email,
+                Name = $"{user.FirstName} {user.LastName}",
+                Token = newToken
+            });
+        }
+
         public async Task<Result> Handle(LoginByEmailCommand request, CancellationToken cancellationToken)
         {
             // Generate token used for magic link
-            var token = _authenticationService.AuthenticateByEmail(request.Email, out User user);
+            var token = _authenticationService.AuthenticateByEmail(request.Email, AccessTokenType.MagicLink, out User user);
 
             // Check if the generated token is NULL or empty
             if(!string.IsNullOrEmpty(token))
@@ -73,25 +95,34 @@ namespace BTS.Core.Commands.Handlers
             return Result.Success();
         }
 
-        public async Task<Result> Handle(LoginByTokenCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(PasswordResetByEmailCommand request, CancellationToken cancellationToken)
         {
-            // Generate new token from the token provided
-            var newToken = _authenticationService.AuthenticateByToken(request.Token, out User user);
+            // Generate token used for password reset link
+            var token = _authenticationService.AuthenticateByEmail(request.Email, AccessTokenType.PasswordResetLink, out User user);
 
-            // Update magic link token to used
-            var magicLinkToken = _accessTokenRepository.GetOne(data => data.Token.Equals(request.Token) &&
-                                                                       data.Type == AccessTokenType.MagicLink);
-
-            // Update necessary information
-            magicLinkToken.SetTokenToUsed(request.Requestor, DateTimeExtension.GetCurrentDateTimeOffsetUtc());
-            await _accessTokenRepository.UpdateAsync(magicLinkToken, cancellationToken);
-
-            return Result.Success(new
+            // Check if the generated token is NULL or empty
+            if (!string.IsNullOrEmpty(token))
             {
-                Email = user.Email,
-                Name = $"{user.FirstName} {user.LastName}",
-                Token = newToken
-            });
+                // Create a record for the generated token
+                var result = await _accessTokenRepository.CreateAsync(new AccessToken
+                {
+                    Id = Guid.NewGuid(),
+                    UserId = user.Id,
+                    Token = token,
+                    Type = AccessTokenType.PasswordResetLink,
+                    CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc(),
+                    CreatedBy = request.Email
+                }, cancellationToken);
+
+                // Send a event message to message broker
+                await _publishEndpoint.Publish(new PasswordResetLinkCreatedEvent
+                {
+                    Id = result.Id,
+                    UserId = result.UserId,
+                }, cancellationToken);
+            }
+
+            return Result.Success();
         }
     }
 }

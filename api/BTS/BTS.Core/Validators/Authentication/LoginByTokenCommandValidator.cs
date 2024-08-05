@@ -34,7 +34,8 @@ namespace BTS.Core.Validators.Authentication
                 }).WithMessage("'{PropertyName}' is invalid or expired.")
                 .MustAsync(async (command, token, cancellation) =>
                 {
-                    var isExist = await _accessTokenRepository.IsExistAsync(data => data.Token.Equals(token), 
+                    var isExist = await _accessTokenRepository.IsExistAsync(data => data.Token.Equals(token) &&
+                                                                                    data.Type == AccessTokenType.MagicLink, 
                                                                            cancellation);
                     return isExist;
                 }).WithMessage("'{PropertyName}' is not found in the database.")
