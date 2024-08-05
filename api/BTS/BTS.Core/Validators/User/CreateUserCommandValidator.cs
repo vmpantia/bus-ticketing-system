@@ -19,8 +19,7 @@ namespace BTS.Core.Validators.User
             RuleFor(property => property.Email)
                 .NotNull()
                 .NotEmpty()
-                .EmailAddress()
-                .WithName("Email Address");
+                .EmailAddress();
 
             RuleFor(property => property.Password)
                 .NotNull()

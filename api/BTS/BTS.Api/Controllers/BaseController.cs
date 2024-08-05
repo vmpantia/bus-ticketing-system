@@ -4,7 +4,6 @@ using BTS.Domain.Models.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using BTS.Domain.Contractors.Authentication;
-using System.IdentityModel.Tokens.Jwt;
 using BTS.Api.Extensions;
 using BTS.Domain.Constants;
 using BTS.Domain.Exceptions;

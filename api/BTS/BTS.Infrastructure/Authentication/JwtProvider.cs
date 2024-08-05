@@ -49,7 +49,8 @@ namespace BTS.Infrastructure.Authentication
             var jsonToken = _tokenHandler.ReadToken(token);
             var securityToken = (JwtSecurityToken)_tokenHandler.ReadToken(token);
 
-            return securityToken.Claims.FirstOrDefault(c => c.Type.Equals(claimName))?.Value;
+            // Get claims value by claimName
+            return securityToken.Claims.FirstOrDefault(c => c.Type.Equals(claimName))?.Value ?? null;
         }
 
         public async Task<bool> IsTokenValid(string token)

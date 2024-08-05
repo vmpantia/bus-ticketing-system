@@ -69,16 +69,25 @@ namespace BTS.Core.Commands.Handlers
             return Result.Success("Magic link created, Kindly check on your email.");
         }
 
-        public async Task<Result> Handle(LoginByTokenCommand request, CancellationToken cancellationToken) =>
-            await Task.Run(() =>
+        public async Task<Result> Handle(LoginByTokenCommand request, CancellationToken cancellationToken)
+        {
+            // Generate new token from the token provided
+            var newToken = _authenticationService.AuthenticateByToken(request.Token, out User user);
+
+            // Update magic link token to used
+            var magicLinkToken = _accessTokenRepository.GetOne(data => data.Token.Equals(request.Token) &&
+                                                                       data.Type == AccessTokenType.MagicLink);
+
+            // Update necessary information
+            magicLinkToken.SetTokenToUsed(request.Requestor, DateTimeExtension.GetCurrentDateTimeOffsetUtc());
+            await _accessTokenRepository.UpdateAsync(magicLinkToken, cancellationToken);
+
+            return Result.Success(new
             {
-                var token = _authenticationService.AuthenticateByToken(request.Token, out User user);
-                return Result.Success(new
-                {
-                    Email = user.Email,
-                    Name = $"{user.FirstName} {user.LastName}",
-                    Token = token
-                });
+                Email = user.Email,
+                Name = $"{user.FirstName} {user.LastName}",
+                Token = newToken
             });
+        }
     }
 }

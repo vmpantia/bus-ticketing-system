@@ -86,23 +86,10 @@ namespace BTS.Core.Services
             var userEmail = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_EMAIL, token);
             var tokenType = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_TOKEN_TYPE, token);
 
-            // Check if the userId is valid Guid
-            if (!Guid.TryParse(userId, out Guid id))
-                throw new ArgumentException("User Id from token is not a valid user id.");
-
-            // Check if the userEmail is valid
-            if (string.IsNullOrEmpty(userEmail))
-                throw new ArgumentException("User email from token must have value.");
-
-            // Check if the token type is valid
-            if (string.IsNullOrEmpty(tokenType))
-                throw new ArgumentException("Access Token Type from token must have value.");
-
-            // Check if the user exist in the database
-            if (!_userRepository.IsExist(data => data.Id == id &&
-                                                data.Email == userEmail &&
-                                                data.Status == CommonStatus.Active, out user))
-                throw new NotFoundException(string.Format(ErrorMessage.ERROR_NOT_FOUND_FORMAT, nameof(User)));
+            // Get user based on the token provided
+            user = _userRepository.GetOne(data => data.Id == Guid.Parse(userId!) &&
+                                                  data.Email.Equals(userEmail) &&
+                                                  data.Status == CommonStatus.Active);
 
             // Create user claims use for generating access token
             var claims = new List<Claim>()
