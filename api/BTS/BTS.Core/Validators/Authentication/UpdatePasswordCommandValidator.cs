@@ -7,7 +7,7 @@ using FluentValidation;
 
 namespace BTS.Core.Validators.Authentication
 {
-    public class LoginByTokenCommandValidator : AbstractValidator<LoginByTokenCommand>
+    public class UpdatePasswordCommandValidator : AbstractValidator<UpdatePasswordCommand>
     {
         private readonly IJwtProvider _jwtProvider;
         private readonly IUserRepository _userRepository;
@@ -15,9 +15,9 @@ namespace BTS.Core.Validators.Authentication
 
         private string? _userEmail;
         private string? _tokenType;
-        public LoginByTokenCommandValidator(IJwtProvider jwtProvider, 
-                                            IUserRepository userRepository,
-                                            IAccessTokenRepository accessTokenRepository)
+        public UpdatePasswordCommandValidator(IJwtProvider jwtProvider,
+                                              IUserRepository userRepository,
+                                              IAccessTokenRepository accessTokenRepository)
         {
             _jwtProvider = jwtProvider;
             _userRepository = userRepository;
@@ -35,8 +35,8 @@ namespace BTS.Core.Validators.Authentication
                 .MustAsync(async (command, token, cancellation) =>
                 {
                     var isExist = await _accessTokenRepository.IsExistAsync(data => data.Token.Equals(token) &&
-                                                                                    data.Type == AccessTokenType.MagicLink, 
-                                                                           cancellation);
+                                                                                    data.Type == AccessTokenType.ResetPasswordLink,
+                                                                            cancellation);
                     return isExist;
                 }).WithMessage("'{PropertyName}' is not found in the database.")
                 .MustAsync(async (command, token, cancellation) =>

@@ -17,14 +17,5 @@ namespace BTS.Domain.Models.Entities
         public required string CreatedBy { get; set; }
         public DateTimeOffset? UpdatedAt { get; set; }
         public string? UpdatedBy { get; set; }
-
-        public void SetTokenToUsed(string requestor, DateTimeOffset currentDateTime)
-        {
-           this.IsUsed = true;
-           this.UsedAt = currentDateTime;
-           this.UsedBy = requestor;
-           this.UpdatedAt = currentDateTime;
-           this.UpdatedBy = requestor;
-        }
     }
 }

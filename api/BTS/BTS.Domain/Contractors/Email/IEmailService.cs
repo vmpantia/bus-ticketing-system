@@ -6,6 +6,6 @@ namespace BTS.Core.Services
     public interface IEmailService
     {
         Task SendMagicLinkEmail(AccessToken accessToken, User user, CancellationToken cancellationToken);
-        Task SendPasswordResetEmail(AccessToken accessToken, User user, CancellationToken cancellationToken);
+        Task SendResetPasswordEmail(AccessToken accessToken, User user, CancellationToken cancellationToken);
     }
 }

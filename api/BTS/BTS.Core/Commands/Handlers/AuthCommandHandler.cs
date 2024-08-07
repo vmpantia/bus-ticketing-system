@@ -1,5 +1,6 @@
 ﻿using BTS.Core.Commands.Models.Authentication;
 using BTS.Core.MessageBroker.Events.Authentication;
+using BTS.Domain.Constants;
 using BTS.Domain.Contractors.Authentication;
 using BTS.Domain.Contractors.Repositories;
 using BTS.Domain.Extensions;
@@ -15,20 +16,24 @@ namespace BTS.Core.Commands.Handlers
         IRequestHandler<LoginByCredentialsCommand, Result>,
         IRequestHandler<LoginByTokenCommand, Result>,
         IRequestHandler<LoginByEmailCommand, Result>,
-        IRequestHandler<PasswordResetByEmailCommand, Result>
+        IRequestHandler<ResetPasswordByEmailCommand, Result>,
+        IRequestHandler<UpdatePasswordCommand, Result>
     {
         private readonly IUserRepository _userRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
         private readonly IAuthenticationService _authenticationService;
+        private readonly IJwtProvider _jwtProvider;
         private readonly IPublishEndpoint _publishEndpoint;
         public AuthCommandHandler(IUserRepository userRepository,
                                   IAccessTokenRepository accessTokenRepository,
                                   IAuthenticationService authenticationService,
+                                  IJwtProvider jwtProvider,
                                   IPublishEndpoint publishEndpoint)
         {
             _userRepository = userRepository;
             _accessTokenRepository = accessTokenRepository;
             _authenticationService = authenticationService;
+            _jwtProvider = jwtProvider;
             _publishEndpoint = publishEndpoint;
         }
 
@@ -46,16 +51,18 @@ namespace BTS.Core.Commands.Handlers
 
         public async Task<Result> Handle(LoginByTokenCommand request, CancellationToken cancellationToken)
         {
+            // Get email from the token provided
+            var email = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_EMAIL, request.Token);
+
             // Generate new token from the token provided
             var newToken = _authenticationService.AuthenticateByToken(request.Token, out User user);
 
             // Update magic link token to used
-            var magicLinkToken = _accessTokenRepository.GetOne(data => data.Token.Equals(request.Token) &&
-                                                                       data.Type == AccessTokenType.MagicLink);
-
-            // Update necessary information
-            magicLinkToken.SetTokenToUsed(request.Requestor, DateTimeExtension.GetCurrentDateTimeOffsetUtc());
-            await _accessTokenRepository.UpdateAsync(magicLinkToken, cancellationToken);
+            await _accessTokenRepository.UpdateToUsedAsync(user.Id, 
+                                                           request.Token, 
+                                                           AccessTokenType.MagicLink,
+                                                           user.Email, 
+                                                           cancellationToken);
 
             return Result.Success(new
             {
@@ -95,10 +102,10 @@ namespace BTS.Core.Commands.Handlers
             return Result.Success();
         }
 
-        public async Task<Result> Handle(PasswordResetByEmailCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(ResetPasswordByEmailCommand request, CancellationToken cancellationToken)
         {
             // Generate token used for password reset link
-            var token = _authenticationService.AuthenticateByEmail(request.Email, AccessTokenType.PasswordResetLink, out User user);
+            var token = _authenticationService.AuthenticateByEmail(request.Email, AccessTokenType.ResetPasswordLink, out User user);
 
             // Check if the generated token is NULL or empty
             if (!string.IsNullOrEmpty(token))
@@ -109,18 +116,43 @@ namespace BTS.Core.Commands.Handlers
                     Id = Guid.NewGuid(),
                     UserId = user.Id,
                     Token = token,
-                    Type = AccessTokenType.PasswordResetLink,
+                    Type = AccessTokenType.ResetPasswordLink,
                     CreatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc(),
                     CreatedBy = request.Email
                 }, cancellationToken);
 
                 // Send a event message to message broker
-                await _publishEndpoint.Publish(new PasswordResetLinkCreatedEvent
+                await _publishEndpoint.Publish(new ResetPasswordLinkCreatedEvent
                 {
                     Id = result.Id,
                     UserId = result.UserId,
                 }, cancellationToken);
             }
+
+            return Result.Success();
+        }
+
+        public async Task<Result> Handle(UpdatePasswordCommand request, CancellationToken cancellationToken)
+        {
+            // Get email from the reset password token
+            var email = _jwtProvider.GetValueByClaim(Common.CLAIM_NAME_USER_EMAIL, request.Token);
+
+            // Check if the email exist on the database
+            var user = _userRepository.GetOne(data => data.Email.Equals(email) &&
+                                                      data.Status == CommonStatus.Active);
+
+            // Update reset password token to used
+            await _accessTokenRepository.UpdateToUsedAsync(user.Id,
+                                                           request.Token,
+                                                           AccessTokenType.ResetPasswordLink,
+                                                           user.Email,
+                                                           cancellationToken);
+
+            // Update user necessary information
+            user.Password = request.NewPassword;
+            user.UpdatedAt = DateTimeExtension.GetCurrentDateTimeOffsetUtc();
+            user.UpdatedBy = email;
+            await _userRepository.UpdateAsync(user, cancellationToken);
 
             return Result.Success();
         }

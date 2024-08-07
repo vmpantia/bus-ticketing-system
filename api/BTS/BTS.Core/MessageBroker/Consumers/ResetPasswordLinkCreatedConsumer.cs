@@ -10,16 +10,16 @@ using Microsoft.Extensions.Logging;
 
 namespace BTS.Core.MessageBroker.Consumers
 {
-    public class PasswordResetLinkCreatedConsumer : IConsumer<PasswordResetLinkCreatedEvent>
+    public class ResetPasswordLinkCreatedConsumer : IConsumer<ResetPasswordLinkCreatedEvent>
     {
         private readonly IEmailService _emailService;
         private readonly IUserRepository _userRepository;
         private readonly IAccessTokenRepository _accessTokenRepository;
-        private readonly ILogger<PasswordResetLinkCreatedConsumer> _logger;
-        public PasswordResetLinkCreatedConsumer(IEmailService emailService,
+        private readonly ILogger<ResetPasswordLinkCreatedConsumer> _logger;
+        public ResetPasswordLinkCreatedConsumer(IEmailService emailService,
                                                 IUserRepository userRepository,
                                                 IAccessTokenRepository accessTokenRepository,
-                                                ILogger<PasswordResetLinkCreatedConsumer> logger)
+                                                ILogger<ResetPasswordLinkCreatedConsumer> logger)
         {
             _emailService = emailService;
             _userRepository = userRepository;
@@ -27,23 +27,23 @@ namespace BTS.Core.MessageBroker.Consumers
             _logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<PasswordResetLinkCreatedEvent> context)
+        public async Task Consume(ConsumeContext<ResetPasswordLinkCreatedEvent> context)
         {
             try
             {
                 if (!_accessTokenRepository.IsExist(data => data.Id == context.Message.Id &&
                                                             data.UserId == context.Message.UserId &&
-                                                            data.Type == AccessTokenType.PasswordResetLink , out AccessToken accessToken))
+                                                            data.Type == AccessTokenType.ResetPasswordLink , out AccessToken accessToken))
                     throw new NotFoundException(string.Format(ErrorMessage.ERROR_NOT_FOUND_FORMAT, "Token"));
 
                 if (!_userRepository.IsExist(data => data.Id == context.Message.UserId, out User user))
                     throw new NotFoundException(string.Format(ErrorMessage.ERROR_NOT_FOUND_FORMAT, nameof(User)));
 
-                await _emailService.SendPasswordResetEmail(accessToken, user, context.CancellationToken);
+                await _emailService.SendResetPasswordEmail(accessToken, user, context.CancellationToken);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to send password reset link from {nameof(PasswordResetLinkCreatedConsumer)} due to error {ex.Message}");
+                _logger.LogError($"Failed to send password reset link from {nameof(ResetPasswordLinkCreatedConsumer)} due to error {ex.Message}");
                 return;
             }
         }

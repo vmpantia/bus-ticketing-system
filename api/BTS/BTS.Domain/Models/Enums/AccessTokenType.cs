@@ -3,6 +3,6 @@
     public enum AccessTokenType
     {
         MagicLink,
-        PasswordResetLink
+        ResetPasswordLink
     }
 }

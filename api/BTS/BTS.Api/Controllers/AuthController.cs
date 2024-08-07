@@ -24,8 +24,12 @@ namespace BTS.Api.Controllers
         public async Task<IActionResult> PostLoginByToken([FromQuery] string token) =>
             await HandleRequestAsync(new LoginByTokenCommand(token));
 
-        [HttpPost("password/reset")]
-        public async Task<IActionResult> PostPasswordResetByEmail(string email) =>
-            await HandleRequestAsync(new PasswordResetByEmailCommand(email));
+        [HttpPost("reset/password")]
+        public async Task<IActionResult> PostResetPasswordByEmail(string email) =>
+            await HandleRequestAsync(new ResetPasswordByEmailCommand(email));
+
+        [HttpPut("update/password")]
+        public async Task<IActionResult> PutUpdatePassword([FromBody] UpdatePasswordDto dto) =>
+            await HandleRequestAsync(new UpdatePasswordCommand(dto.Token, dto.NewPassword));
     }
 }

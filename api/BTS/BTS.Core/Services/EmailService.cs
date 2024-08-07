@@ -21,7 +21,7 @@ namespace BTS.Core.Services
             await _emailProvider.SendAsync(content, cancellationToken);
         }
 
-        public async Task SendPasswordResetEmail(AccessToken accessToken, User user, CancellationToken cancellationToken)
+        public async Task SendResetPasswordEmail(AccessToken accessToken, User user, CancellationToken cancellationToken)
         {
             var content = new EmailContent
             {
