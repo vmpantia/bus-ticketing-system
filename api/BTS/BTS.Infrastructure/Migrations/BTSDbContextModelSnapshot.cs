@@ -362,8 +362,8 @@ namespace BTS.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("90c0d57c-200d-40be-ab82-f2c6b7cad76b"),
-                            CreatedAt = new DateTimeOffset(new DateTime(2024, 8, 4, 11, 36, 44, 553, DateTimeKind.Unspecified).AddTicks(3904), new TimeSpan(0, 0, 0, 0, 0)),
+                            Id = new Guid("73e842b2-07eb-47bf-a94b-8404057405d9"),
+                            CreatedAt = new DateTimeOffset(new DateTime(2024, 8, 7, 13, 16, 27, 251, DateTimeKind.Unspecified).AddTicks(7991), new TimeSpan(0, 0, 0, 0, 0)),
                             CreatedBy = "System",
                             Email = "test_admin@test.com",
                             FirstName = "Admin",

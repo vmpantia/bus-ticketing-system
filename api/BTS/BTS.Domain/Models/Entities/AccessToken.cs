@@ -1,9 +1,11 @@
 ﻿using BTS.Domain.Models.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace BTS.Domain.Models.Entities
 {
     public class AccessToken
     {
+        [Key]
         public required Guid Id { get; set; }
         public required Guid UserId { get; set; }
         public required string Token { get; set; }

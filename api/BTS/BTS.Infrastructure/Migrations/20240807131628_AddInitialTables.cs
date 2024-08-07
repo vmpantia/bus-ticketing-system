@@ -93,15 +93,15 @@ namespace BTS.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MiddleName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    IsAdmin = table.Column<bool>(type: "bit", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     CreatedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UpdatedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
                     UpdatedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeletedAt = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    DeletedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsEmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    IsAdmin = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -176,7 +176,7 @@ namespace BTS.Infrastructure.Migrations
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "CreatedAt", "CreatedBy", "DeletedAt", "DeletedBy", "Email", "FirstName", "IsAdmin", "IsEmailConfirmed", "LastName", "MiddleName", "Password", "Status", "UpdatedAt", "UpdatedBy", "Username" },
-                values: new object[] { new Guid("90c0d57c-200d-40be-ab82-f2c6b7cad76b"), new DateTimeOffset(new DateTime(2024, 8, 4, 11, 36, 44, 553, DateTimeKind.Unspecified).AddTicks(3904), new TimeSpan(0, 0, 0, 0, 0)), "System", null, null, "test_admin@test.com", "Admin", true, true, "Admin", null, "P@ssw0rd", 0, null, null, "admin" });
+                values: new object[] { new Guid("73e842b2-07eb-47bf-a94b-8404057405d9"), new DateTimeOffset(new DateTime(2024, 8, 7, 13, 16, 27, 251, DateTimeKind.Unspecified).AddTicks(7991), new TimeSpan(0, 0, 0, 0, 0)), "System", null, null, "test_admin@test.com", "Admin", true, true, "Admin", null, "P@ssw0rd", 0, null, null, "admin" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccessTokens_UserId_Token_IsUsed",
